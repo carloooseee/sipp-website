@@ -15,6 +15,9 @@ import Auth from './pages/Auth';
 
 import BulletinBoard from './pages/BulletinBoard';
 
+import { db } from './firebase';
+import { doc, getDoc } from 'firebase/firestore';
+
 const NavLink = ({ to, children }) => {
   const location = useLocation();
   const isActive = location.pathname === to;
@@ -28,11 +31,29 @@ const NavLink = ({ to, children }) => {
 
 function App() {
   const [user, setUser] = useState(null);
+  const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
+      if (currentUser) {
+        // Fetch additional user data (like role) from Firestore
+        try {
+          const userRef = doc(db, "members", currentUser.uid);
+          const userSnap = await getDoc(userRef);
+          if (userSnap.exists()) {
+            setUserData(userSnap.data());
+          } else {
+            setUserData(null);
+          }
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+          setUserData(null);
+        }
+      } else {
+        setUserData(null);
+      }
       setLoading(false);
     });
     return () => unsubscribe();
@@ -55,13 +76,35 @@ function App() {
     return <Auth />;
   }
 
+  const isAdmin = userData?.role === 'Admin';
+
+  if (isAdmin) {
+    return (
+      <Router>
+        <header className="header">
+          <div className="container nav">
+            <Link to="/admin" className="nav-logo" style={{ fontWeight: '800', fontSize: '1.5rem', color: '#001F3F', textDecoration: 'none', letterSpacing: '-0.05em' }}>
+              KDBM ADMIN
+            </Link>
+            <button onClick={handleLogout} className="btn-secondary btn" style={{ padding: '0.4rem 0.8rem', fontSize: '0.75rem' }}>LOGOUT</button>
+          </div>
+        </header>
+        <main className="container content-wrapper" style={{ paddingTop: '4rem' }}>
+          <Routes>
+            <Route path="*" element={<AdminDashboard />} />
+          </Routes>
+        </main>
+      </Router>
+    );
+  }
+
   return (
     <Router>
       <header className="header">
         <div className="container nav">
           <div style={{ display: 'flex', alignItems: 'center', gap: '3rem' }}>
             <Link to="/" className="nav-logo" style={{ fontWeight: '800', fontSize: '1.5rem', color: '#001F3F', textDecoration: 'none', letterSpacing: '-0.05em' }}>
-              SIPP
+              KDBM
             </Link>
             <nav className="nav-links">
               <NavLink to="/bulletin">ANNOUNCEMENT SECTION</NavLink>
@@ -83,7 +126,7 @@ function App() {
           <Route path="/register" element={<RegistrationForm />} />
           <Route path="/database" element={<MemberDatabase />} />
           <Route path="/bulletin" element={<BulletinBoard />} />
-          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admin" element={<Navigate to="/" />} />
           <Route path="/announcements" element={<Announcements />} />
           <Route path="/about" element={<AboutKDBM />} />
           <Route path="/contact" element={<Contact />} />
