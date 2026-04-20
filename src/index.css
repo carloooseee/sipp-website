@@ -413,13 +413,100 @@ body {
   height: 20px;
 }
 
+.auth-mobile-toggle {
+  display: none;
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.95rem;
+  color: #666;
+}
+
+.btn-link {
+  background: none;
+  border: none;
+  color: var(--primary);
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: 0.95rem;
+  margin-left: 0.5rem;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.nav-logo {
+  font-weight: 800;
+  font-size: 1.5rem;
+  color: var(--primary);
+  text-decoration: none;
+  letter-spacing: -0.05em;
+}
+
+.user-display {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #666;
+}
+
+.btn-logout {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.75rem;
+}
+
 /* Responsive Overrides */
+@media (max-width: 900px) {
+  .nav-left {
+    gap: 1.5rem;
+  }
+  .nav-links {
+    gap: 1rem;
+    font-size: 0.8rem;
+  }
+}
+
 @media (max-width: 768px) {
+  .header {
+    padding: 1rem;
+  }
+  .nav {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .nav-left {
+    flex-direction: column;
+    width: 100%;
+    gap: 1rem;
+  }
+  .nav-links {
+    flex-wrap: wrap;
+    justify-content: center;
+    text-align: center;
+  }
+  .nav-actions {
+    width: 100%;
+    justify-content: space-between;
+    border-top: 1px solid var(--border);
+    padding-top: 1rem;
+  }
+  
   .auth-overlay-container {
     display: none;
   }
   .auth-form-section {
     width: 100%;
+  }
+  .auth-mobile-toggle {
+    display: block;
   }
   .auth-container-v2.is-login .sign-in-container {
     transform: translateX(0);
@@ -429,4 +516,13 @@ body {
     opacity: 0;
     pointer-events: none;
   }
+
+  .steps-container {
+    gap: 0.5rem;
+  }
+  .step-item {
+    font-size: 0.7rem;
+    padding-bottom: 0.5rem;
+  }
 }
+

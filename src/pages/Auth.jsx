@@ -100,6 +100,10 @@ export default function Auth() {
                 Sign up with Google
               </button>
             </div>
+
+            <div className="auth-mobile-toggle">
+              Already have an account? <button type="button" className="btn-link" onClick={() => setIsLogin(true)}>Sign in</button>
+            </div>
           </div>
         </div>
 
@@ -129,6 +133,10 @@ export default function Auth() {
                 <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" />
                 Sign in with Google
               </button>
+            </div>
+
+            <div className="auth-mobile-toggle">
+              Don't have an account? <button type="button" className="btn-link" onClick={() => setIsLogin(false)}>Sign up</button>
             </div>
           </div>
         </div>

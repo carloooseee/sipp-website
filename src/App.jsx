@@ -102,8 +102,8 @@ function App() {
     <Router>
       <header className="header">
         <div className="container nav">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '3rem' }}>
-            <Link to="/" className="nav-logo" style={{ fontWeight: '800', fontSize: '1.5rem', color: '#001F3F', textDecoration: 'none', letterSpacing: '-0.05em' }}>
+          <div className="nav-left">
+            <Link to="/" className="nav-logo">
               KDBM
             </Link>
             <nav className="nav-links">
@@ -113,9 +113,9 @@ function App() {
               <NavLink to="/contact">CONTACT PAGE</NavLink>
             </nav>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-            <span style={{ fontSize: '0.8rem', fontWeight: '700', color: '#666' }}>{user.displayName || user.email}</span>
-            <button onClick={handleLogout} className="btn-secondary btn" style={{ padding: '0.4rem 0.8rem', fontSize: '0.75rem' }}>LOGOUT</button>
+          <div className="nav-actions">
+            <span className="user-display">{user.displayName || user.email}</span>
+            <button onClick={handleLogout} className="btn-secondary btn btn-logout">LOGOUT</button>
           </div>
         </div>
       </header>
