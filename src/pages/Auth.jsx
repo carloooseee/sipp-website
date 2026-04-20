@@ -144,7 +144,7 @@ export default function Auth() {
           </form>
 
           <button onClick={handleGoogleSignIn} className="btn btn-google btn-full" disabled={loading}>
-            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" alt="Google" style={{ width: '18px' }} />
+            <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" />
             {isLogin ? 'Sign in with Google' : 'Sign up with Google'}
           </button>
         </div>
