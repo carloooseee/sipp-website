@@ -21,7 +21,6 @@ export default function Auth() {
   const saveUserToFirestore = async (user) => {
     const userRef = doc(db, "members", user.uid);
     const userDoc = await getDoc(userRef);
-    
     if (!userDoc.exists()) {
       await setDoc(userRef, {
         firstName: user.displayName?.split(' ')[0] || '',
@@ -33,13 +32,12 @@ export default function Auth() {
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleAuth = async (e, type) => {
     e.preventDefault();
     setError('');
     setLoading(true);
-
     try {
-      if (isLogin) {
+      if (type === 'login') {
         await signInWithEmailAndPassword(auth, email, password);
       } else {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -69,84 +67,86 @@ export default function Auth() {
   };
 
   return (
-    <div className={`auth-split-wrapper ${isLogin ? 'is-login' : ''}`}>
-      {/* Image Panel */}
-      <div className="auth-panel auth-image-panel" style={{ backgroundImage: `url(${loginBg})` }}>
-        <div className="auth-image-content">
-          <h1 style={{ fontSize: '3rem', fontWeight: 'bold', marginBottom: '1.5rem', lineHeight: 1.1 }}>
-            {isLogin ? "Welcome Back to SIPP" : "Create your Free Account"}
-          </h1>
-          <p style={{ fontSize: '1.25rem', opacity: 0.9 }}>
-            Continue managing your member database effortlessly.
-          </p>
-        </div>
-      </div>
-
-      {/* Form Panel */}
-      <div className="auth-panel auth-form-panel">
-        <div className="auth-form-container">
-          <h2 className="page-title" style={{ fontSize: '2.5rem', textTransform: 'none', marginBottom: '0.5rem' }}>
-            {isLogin ? 'Sign in' : 'Sign up'}
-          </h2>
-          
-          <p className="auth-link-text">
-            {isLogin ? "Don't have an account ?" : "Already have an account ?"}
-            <button onClick={() => setIsLogin(!isLogin)}>
-              {isLogin ? 'Sign Up' : 'Sign In'}
-            </button>
-          </p>
-
-          {error && (
-            <div style={{ color: 'var(--error)', border: '1px solid var(--error)', padding: '0.5rem', marginBottom: '1.5rem', fontSize: '0.875rem' }}>
-              {error}
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit}>
-            {!isLogin && (
+    <div className={`auth-container-v2 ${isLogin ? 'is-login' : ''}`}>
+      <div className="auth-content">
+        {/* Sign Up Form Section */}
+        <div className="auth-form-section sign-up-container">
+          <div className="auth-form-wrapper">
+            <h2 className="auth-title">Create Account</h2>
+            <p className="auth-subtitle">Join the professional KDBM network today.</p>
+            {error && !isLogin && <div className="auth-error">{error}</div>}
+            
+            <form onSubmit={(e) => handleAuth(e, 'signup')} style={{ marginBottom: '1.25rem' }}>
               <div className="form-group">
                 <label className="form-label">Full Name</label>
-                <input 
-                  type="text" 
-                  className="form-control" 
-                  value={displayName} 
-                  onChange={(e) => setDisplayName(e.target.value)} 
-                  required 
-                />
+                <input type="text" className="form-control" value={displayName} onChange={(e) => setDisplayName(e.target.value)} required />
               </div>
-            )}
+              <div className="form-group">
+                <label className="form-label">Email</label>
+                <input type="email" className="form-control" value={email} onChange={(e) => setEmail(e.target.value)} required />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Password</label>
+                <input type="password" className="form-control" value={password} onChange={(e) => setPassword(e.target.value)} required />
+              </div>
+              <button type="submit" className="btn btn-full btn-primary" disabled={loading}>
+                {loading ? 'Processing...' : 'SIGN UP'}
+              </button>
+            </form>
             
-            <div className="form-group">
-              <label className="form-label">Email</label>
-              <input 
-                type="email" 
-                className="form-control" 
-                value={email} 
-                onChange={(e) => setEmail(e.target.value)} 
-                required 
-              />
+            <div>
+              <button onClick={handleGoogleSignIn} className="btn btn-google btn-full" disabled={loading}>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" />
+                Sign up with Google
+              </button>
             </div>
-            
-            <div className="form-group">
-              <label className="form-label">Password</label>
-              <input 
-                type="password" 
-                className="form-control" 
-                value={password} 
-                onChange={(e) => setPassword(e.target.value)} 
-                required 
-              />
-            </div>
-            
-            <button type="submit" className="btn btn-full btn-primary" style={{ background: '#0d1e1c', color: 'white', borderColor: '#0d1e1c', padding: '1rem' }} disabled={loading}>
-              {loading ? 'Processing...' : (isLogin ? 'Login' : 'Create an Account')}
-            </button>
-          </form>
+          </div>
+        </div>
 
-          <button onClick={handleGoogleSignIn} className="btn btn-google btn-full" disabled={loading}>
-            <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" />
-            {isLogin ? 'Sign in with Google' : 'Sign up with Google'}
-          </button>
+        {/* Sign In Form Section */}
+        <div className="auth-form-section sign-in-container">
+          <div className="auth-form-wrapper">
+            <h2 className="auth-title">Welcome Back</h2>
+            <p className="auth-subtitle">Sign in to manage your professional records.</p>
+            {error && isLogin && <div className="auth-error">{error}</div>}
+            
+            <form onSubmit={(e) => handleAuth(e, 'login')} style={{ marginBottom: '1.25rem' }}>
+              <div className="form-group">
+                <label className="form-label">Email</label>
+                <input type="email" className="form-control" value={email} onChange={(e) => setEmail(e.target.value)} required />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Password</label>
+                <input type="password" className="form-control" value={password} onChange={(e) => setPassword(e.target.value)} required />
+              </div>
+              <button type="submit" className="btn btn-full btn-primary" disabled={loading}>
+                {loading ? 'Processing...' : 'SIGN IN'}
+              </button>
+            </form>
+
+            <div>
+              <button onClick={handleGoogleSignIn} className="btn btn-google btn-full" disabled={loading}>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" />
+                Sign in with Google
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Sliding Overlay Panel */}
+        <div className="auth-overlay-container">
+          <div className="auth-overlay" style={{ backgroundImage: `url(${loginBg})` }}>
+            <div className="auth-overlay-panel overlay-left">
+              <h1>New here?</h1>
+              <p>Join the KDBM community and share your artwork today.</p>
+              <button className="btn btn-secondary btn-ghost" onClick={() => setIsLogin(false)}>SIGN UP</button>
+            </div>
+            <div className="auth-overlay-panel overlay-right">
+              <h1>Already have an account?</h1>
+              <p>Keep your business profile up to date by signing in.</p>
+              <button className="btn btn-secondary btn-ghost" onClick={() => setIsLogin(true)}>SIGN IN</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
