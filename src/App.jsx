@@ -13,6 +13,8 @@ import AboutKDBM from './pages/AboutKDBM';
 import Contact from './pages/Contact';
 import Auth from './pages/Auth';
 
+import BulletinBoard from './pages/BulletinBoard';
+
 const NavLink = ({ to, children }) => {
   const location = useLocation();
   const isActive = location.pathname === to;
@@ -42,13 +44,13 @@ function App() {
 
   if (loading) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', fontFamily: 'Inter, sans-serif' }}>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', fontFamily: 'Inter, sans-serif', color: '#001F3F', fontWeight: 'bold' }}>
         LOADING...
       </div>
     );
   }
 
-  // Auth Gate: If not logged in, show Auth component only
+  // Auth Gate
   if (!user) {
     return <Auth />;
   }
@@ -57,20 +59,20 @@ function App() {
     <Router>
       <header className="header">
         <div className="container nav">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
-            <Link to="/" className="nav-logo" style={{ fontWeight: 'bold', fontSize: '1.25rem', textDecoration: 'none', color: '#000', border: '2px solid #000', padding: '0.25rem 0.5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '3rem' }}>
+            <Link to="/" className="nav-logo" style={{ fontWeight: '800', fontSize: '1.5rem', color: '#001F3F', textDecoration: 'none', letterSpacing: '-0.05em' }}>
               SIPP
             </Link>
             <nav className="nav-links">
-              <NavLink to="/announcements">ANNOUNCEMENT</NavLink>
-              <NavLink to="/database">DATABASE</NavLink>
-              <NavLink to="/about">ABOUT</NavLink>
-              <NavLink to="/contact">CONTACT</NavLink>
+              <NavLink to="/bulletin">ANNOUNCEMENT SECTION</NavLink>
+              <NavLink to="/database">LIST OF MEMBERS</NavLink>
+              <NavLink to="/about">ABOUT KDBM</NavLink>
+              <NavLink to="/contact">CONTACT PAGE</NavLink>
             </nav>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <span style={{ fontSize: '0.8rem', fontWeight: 'bold' }}>{user.displayName || user.email}</span>
-            <button onClick={handleLogout} className="btn" style={{ padding: '0.25rem 0.5rem', fontSize: '0.8rem' }}>LOGOUT</button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+            <span style={{ fontSize: '0.8rem', fontWeight: '700', color: '#666' }}>{user.displayName || user.email}</span>
+            <button onClick={handleLogout} className="btn-secondary btn" style={{ padding: '0.4rem 0.8rem', fontSize: '0.75rem' }}>LOGOUT</button>
           </div>
         </div>
       </header>
@@ -80,6 +82,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/register" element={<RegistrationForm />} />
           <Route path="/database" element={<MemberDatabase />} />
+          <Route path="/bulletin" element={<BulletinBoard />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/announcements" element={<Announcements />} />
           <Route path="/about" element={<AboutKDBM />} />

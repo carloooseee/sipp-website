@@ -7,11 +7,7 @@ export default function HomePage() {
     <div className="animate-fade-in" style={{ textAlign: 'center', paddingTop: '4rem' }}>
       <h1 className="page-title" style={{ fontSize: '4rem', marginBottom: '1.5rem' }}>SIPP</h1>
       
-      <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', marginTop: '3rem' }}>
-        <Link to="/announcements" className="btn btn-primary" style={{ padding: '1rem 2rem', fontSize: '1.125rem' }}>
-          ANNOUNCEMENT <ArrowRight size={20} style={{ marginLeft: '0.5rem' }} />
-        </Link>
-      </div>
+      <p className="page-subtitle" style={{ marginTop: '2rem' }}>Welcome to the SIPP Professional Network</p>
     </div>
   );
 }
