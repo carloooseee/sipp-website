@@ -62,9 +62,8 @@ function App() {
               SIPP
             </Link>
             <nav className="nav-links">
-              <NavLink to="/register">REGISTER</NavLink>
+              <NavLink to="/announcements">ANNOUNCEMENT</NavLink>
               <NavLink to="/database">DATABASE</NavLink>
-              <NavLink to="/announcements">NEWS</NavLink>
               <NavLink to="/about">ABOUT</NavLink>
               <NavLink to="/contact">CONTACT</NavLink>
             </nav>
