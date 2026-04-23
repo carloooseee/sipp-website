@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, useLocation, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, useLocation, Navigate, useNavigate } from 'react-router-dom';
 import { auth } from './firebase';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 
@@ -18,7 +18,7 @@ import Projects from './pages/Projects';
 import SeedDatabase from './pages/SeedDatabase';
 
 import { db } from './firebase';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, onSnapshot, query, collection, where } from 'firebase/firestore';
 
 const NavLink = ({ to, children }) => {
   const location = useLocation();
@@ -31,33 +31,65 @@ const NavLink = ({ to, children }) => {
   );
 };
 
+const AuthRedirectHandler = ({ isAdmin }) => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    // Aggressively redirect Admins away from public landing pages directly to the dashboard
+    if (isAdmin && (location.pathname === '/' || location.pathname === '/register' || location.pathname === '/login')) {
+      navigate('/admin', { replace: true });
+    }
+  }, [isAdmin, location.pathname, navigate]);
+
+  return null;
+};
+
 function App() {
   const [user, setUser] = useState(null);
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      setUser(currentUser);
+    let unsubscribeSnapshot = null;
+
+    const unsubscribeAuth = onAuthStateChanged(auth, (currentUser) => {
+      setLoading(true);
+
       if (currentUser) {
-        try {
-          const userRef = doc(db, "members", currentUser.uid);
-          const userSnap = await getDoc(userRef);
-          if (userSnap.exists()) {
-            setUserData(userSnap.data());
+        // Query by email to be more robust (handles cases where UID doesn't match Doc ID)
+        const q = query(collection(db, "members"), where("email", "==", currentUser.email));
+        
+        unsubscribeSnapshot = onSnapshot(q, (querySnapshot) => {
+          if (!querySnapshot.empty) {
+            // Get the first matching document
+            setUserData(querySnapshot.docs[0].data());
           } else {
             setUserData(null);
           }
-        } catch (error) {
+          setUser(currentUser);
+          setLoading(false);
+        }, (error) => {
           console.error("Error fetching user data:", error);
           setUserData(null);
-        }
+          setUser(currentUser);
+          setLoading(false);
+        });
+        
       } else {
+        if (unsubscribeSnapshot) {
+          unsubscribeSnapshot();
+        }
         setUserData(null);
+        setUser(null);
+        setLoading(false);
       }
-      setLoading(false);
     });
-    return () => unsubscribe();
+
+    return () => {
+      unsubscribeAuth();
+      if (unsubscribeSnapshot) unsubscribeSnapshot();
+    };
   }, []);
 
   const handleLogout = () => {
@@ -76,10 +108,11 @@ function App() {
     return <Auth />;
   }
 
-  const isAdmin = userData?.role === 'Admin';
+  const isAdmin = userData?.role?.toLowerCase() === 'admin';
 
   return (
     <Router>
+      <AuthRedirectHandler isAdmin={isAdmin} />
       <header className="header">
         <div className="container nav">
           <div className="nav-left">
@@ -107,17 +140,17 @@ function App() {
 
       <main className="container content-wrapper">
         <Routes>
-          <Route path="/" element={isAdmin ? <Navigate to="/admin" /> : <HomePage />} />
+          <Route path="/" element={isAdmin ? <Navigate to="/admin" replace /> : <HomePage />} />
           <Route path="/about" element={<AboutKDBM />} />
           <Route path="/projects" element={<Projects />} />
           <Route path="/bulletin" element={<BulletinBoard />} />
           <Route path="/register" element={<RegistrationForm />} />
           <Route path="/seed" element={<SeedDatabase />} />
-          <Route path="/admin" element={isAdmin ? <AdminDashboard /> : <Navigate to="/" />} />
-          <Route path="/database" element={isAdmin ? <MemberDatabase /> : <Navigate to="/" />} />
+          <Route path="/admin" element={isAdmin ? <AdminDashboard /> : <Navigate to="/" replace />} />
+          <Route path="/database" element={isAdmin ? <MemberDatabase /> : <Navigate to="/" replace />} />
           <Route path="/announcements" element={<Announcements />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="*" element={<Navigate to="/" />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
     </Router>
