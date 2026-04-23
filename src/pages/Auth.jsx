@@ -15,6 +15,11 @@ export default function Auth() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [address, setAddress] = useState('');
+  const [businessName, setBusinessName] = useState('');
+  const [businessType, setBusinessType] = useState('');
+  
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -23,10 +28,15 @@ export default function Auth() {
     const userDoc = await getDoc(userRef);
     if (!userDoc.exists()) {
       await setDoc(userRef, {
-        firstName: user.displayName?.split(' ')[0] || '',
-        lastName: user.displayName?.split(' ').slice(1).join(' ') || '',
+        firstName: user.displayName?.split(' ')[0] || displayName.split(' ')[0] || '',
+        lastName: user.displayName?.split(' ').slice(1).join(' ') || displayName.split(' ').slice(1).join(' ') || '',
         email: user.email,
+        phone: phone || '',
+        address: address || '',
+        businessName: businessName || '',
+        businessType: businessType || '',
         role: 'Member',
+        status: 'Pending',
         createdAt: serverTimestamp()
       });
     }
@@ -76,27 +86,53 @@ export default function Auth() {
             <p className="auth-subtitle">Join the professional KDBM network today.</p>
             {error && !isLogin && <div className="auth-error">{error}</div>}
             
-            <form onSubmit={(e) => handleAuth(e, 'signup')} style={{ marginBottom: '1.25rem' }}>
-              <div className="form-group">
-                <label className="form-label">Full Name</label>
-                <input type="text" className="form-control" value={displayName} onChange={(e) => setDisplayName(e.target.value)} required />
+            <form onSubmit={(e) => handleAuth(e, 'signup')} style={{ marginBottom: '1rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+                <div className="form-group" style={{ marginBottom: '0.5rem' }}>
+                  <label className="form-label" style={{ fontSize: '0.8rem' }}>Full Name</label>
+                  <input type="text" className="form-control" style={{ padding: '0.5rem' }} value={displayName} onChange={(e) => setDisplayName(e.target.value)} required />
+                </div>
+                <div className="form-group" style={{ marginBottom: '0.5rem' }}>
+                  <label className="form-label" style={{ fontSize: '0.8rem' }}>Email</label>
+                  <input type="email" className="form-control" style={{ padding: '0.5rem' }} value={email} onChange={(e) => setEmail(e.target.value)} required />
+                </div>
               </div>
-              <div className="form-group">
-                <label className="form-label">Email</label>
-                <input type="email" className="form-control" value={email} onChange={(e) => setEmail(e.target.value)} required />
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+                <div className="form-group" style={{ marginBottom: '0.5rem' }}>
+                  <label className="form-label" style={{ fontSize: '0.8rem' }}>Password</label>
+                  <input type="password" className="form-control" style={{ padding: '0.5rem' }} value={password} onChange={(e) => setPassword(e.target.value)} required />
+                </div>
+                <div className="form-group" style={{ marginBottom: '0.5rem' }}>
+                  <label className="form-label" style={{ fontSize: '0.8rem' }}>Phone</label>
+                  <input type="tel" className="form-control" style={{ padding: '0.5rem' }} value={phone} onChange={(e) => setPhone(e.target.value)} />
+                </div>
               </div>
-              <div className="form-group">
-                <label className="form-label">Password</label>
-                <input type="password" className="form-control" value={password} onChange={(e) => setPassword(e.target.value)} required />
+
+              <div className="form-group" style={{ marginBottom: '0.5rem' }}>
+                <label className="form-label" style={{ fontSize: '0.8rem' }}>Complete Address</label>
+                <input type="text" className="form-control" style={{ padding: '0.5rem' }} value={address} onChange={(e) => setAddress(e.target.value)} />
               </div>
-              <button type="submit" className="btn btn-full btn-primary" disabled={loading}>
-                {loading ? 'Processing...' : 'SIGN UP'}
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '1rem' }}>
+                <div className="form-group" style={{ marginBottom: '0' }}>
+                  <label className="form-label" style={{ fontSize: '0.8rem' }}>Business Name</label>
+                  <input type="text" className="form-control" style={{ padding: '0.5rem' }} value={businessName} onChange={(e) => setBusinessName(e.target.value)} />
+                </div>
+                <div className="form-group" style={{ marginBottom: '0' }}>
+                  <label className="form-label" style={{ fontSize: '0.8rem' }}>Industry Type</label>
+                  <input type="text" className="form-control" style={{ padding: '0.5rem' }} value={businessType} onChange={(e) => setBusinessType(e.target.value)} />
+                </div>
+              </div>
+
+              <button type="submit" className="btn btn-full btn-primary" style={{ padding: '0.6rem' }} disabled={loading}>
+                {loading ? 'Processing...' : 'CREATE ACCOUNT'}
               </button>
             </form>
             
-            <div>
-              <button onClick={handleGoogleSignIn} className="btn btn-google btn-full" disabled={loading}>
-                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" />
+            <div style={{ marginTop: '0.5rem' }}>
+              <button onClick={handleGoogleSignIn} className="btn btn-google btn-full" style={{ padding: '0.5rem', marginTop: 0 }} disabled={loading}>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" style={{ width: '16px', height: '16px' }} />
                 Sign up with Google
               </button>
             </div>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { db } from '../firebase';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { db, auth } from '../firebase';
+import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, ArrowLeft, CheckCircle } from 'lucide-react';
 
@@ -12,6 +12,7 @@ export default function RegistrationForm() {
     lastName: '',
     email: '',
     phone: '',
+    address: '',
     businessName: '',
     businessType: '',
     businessDescription: ''
@@ -35,10 +36,14 @@ export default function RegistrationForm() {
     setError(null);
 
     try {
-      await addDoc(collection(db, "members"), {
+      if (!auth.currentUser) {
+        throw new Error("You must be logged in to register.");
+      }
+      const userRef = doc(db, "members", auth.currentUser.uid);
+      await updateDoc(userRef, {
         ...formData,
-        role: 'Member',
-        createdAt: serverTimestamp()
+        status: 'Pending',
+        updatedAt: serverTimestamp()
       });
       setSuccess(true);
       setTimeout(() => navigate('/directory'), 3000);
@@ -104,6 +109,10 @@ export default function RegistrationForm() {
               <div className="form-group">
                 <label className="form-label">Phone Number</label>
                 <input type="tel" name="phone" required value={formData.phone} onChange={handleChange} className="form-control" />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Complete Address</label>
+                <textarea name="address" required value={formData.address} onChange={handleChange} className="form-control" rows="2" style={{ resize: 'vertical' }} />
               </div>
               <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'space-between' }}>
                 <button type="button" onClick={prevStep} className="btn btn-secondary">

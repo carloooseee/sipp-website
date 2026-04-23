@@ -5,18 +5,18 @@ export default function Projects() {
   const projects = [
     {
       id: 1,
-      title: "Community Outreach 2023",
+      title: "GABGABGAB GAB GAB",
       type: "Past",
-      description: "Successfully implemented a local workshop series for small business owners in the KDBM area.",
-      date: "Oct 2023"
+      description: "GABGABGAB GAB GAB",
+      date: "GABGABGAB GAB GAB"
     },
-    {
-      id: 2,
-      title: "Digital Transformation Initiative",
+        {
+      id: 1,
+      title: "GABGABGAB GAB GAB",
       type: "Upcoming",
-      description: "Upcoming program to help traditional businesses transition to e-commerce platforms.",
-      date: "June 2024"
-    }
+      description: "GABGABGAB GAB GAB",
+      date: "GABGABGAB GAB GAB"
+    },
   ];
 
   return (

@@ -103,14 +103,14 @@ body {
 .form-label {
   display: block;
   font-weight: 600;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
   font-size: 0.95rem;
   color: var(--text);
 }
 
 .form-control {
   width: 100%;
-  padding: 0.75rem 1rem;
+  padding: 0.5rem 0.75rem;
   border: 1px solid var(--border);
   background-color: var(--secondary);
   font-family: inherit;
@@ -229,6 +229,7 @@ body {
   justify-content: center;
   width: 50%;
   background: white;
+  overflow-y: auto;
 }
 
 .sign-in-container {
@@ -334,21 +335,21 @@ body {
 .auth-form-wrapper {
   width: 100%;
   max-width: 450px;
-  padding: 40px;
+  padding: 1rem 40px;
 }
 
 .auth-title {
-  font-size: 2.25rem;
+  font-size: 1.75rem;
   font-weight: 700;
   color: var(--primary);
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
   letter-spacing: -0.02em;
 }
 
 .auth-subtitle {
   color: #666;
-  margin-bottom: 2rem;
-  font-size: 1rem;
+  margin-bottom: 1.25rem;
+  font-size: 0.9rem;
 }
 
 .auth-error {
