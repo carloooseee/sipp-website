@@ -15,6 +15,7 @@ import Auth from './pages/Auth';
 
 import BulletinBoard from './pages/BulletinBoard';
 import Projects from './pages/Projects';
+import SeedDatabase from './pages/SeedDatabase';
 
 import { db } from './firebase';
 import { doc, getDoc } from 'firebase/firestore';
@@ -39,7 +40,6 @@ function App() {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
       if (currentUser) {
-        // Fetch additional user data (like role) from Firestore
         try {
           const userRef = doc(db, "members", currentUser.uid);
           const userSnap = await getDoc(userRef);
@@ -72,32 +72,11 @@ function App() {
     );
   }
 
-  // Auth Gate
   if (!user) {
     return <Auth />;
   }
 
   const isAdmin = userData?.role === 'Admin';
-
-  if (isAdmin) {
-    return (
-      <Router>
-        <header className="header">
-          <div className="container nav">
-            <Link to="/admin" className="nav-logo" style={{ fontWeight: '800', fontSize: '1.5rem', color: '#001F3F', textDecoration: 'none', letterSpacing: '-0.05em' }}>
-              KDBM ADMIN
-            </Link>
-            <button onClick={handleLogout} className="btn-secondary btn" style={{ padding: '0.4rem 0.8rem', fontSize: '0.75rem' }}>LOGOUT</button>
-          </div>
-        </header>
-        <main className="container content-wrapper" style={{ paddingTop: '4rem' }}>
-          <Routes>
-            <Route path="*" element={<AdminDashboard />} />
-          </Routes>
-        </main>
-      </Router>
-    );
-  }
 
   return (
     <Router>
@@ -105,14 +84,18 @@ function App() {
         <div className="container nav">
           <div className="nav-left">
             <Link to="/" className="nav-logo">
-              KDBM
+              {isAdmin ? 'KDBM ADMIN' : 'KDBM'}
             </Link>
             <nav className="nav-links">
               <NavLink to="/">HOME</NavLink>
               <NavLink to="/about">ABOUT</NavLink>
               <NavLink to="/projects">PROJECTS</NavLink>
               <NavLink to="/bulletin">BULLETIN BOARD</NavLink>
-              <NavLink to="/register">JOIN US</NavLink>
+              {isAdmin ? (
+                <NavLink to="/admin">DASHBOARD</NavLink>
+              ) : (
+                <NavLink to="/register">JOIN US</NavLink>
+              )}
             </nav>
           </div>
           <div className="nav-actions">
@@ -124,13 +107,14 @@ function App() {
 
       <main className="container content-wrapper">
         <Routes>
-          <Route path="/" element={<HomePage />} />
+          <Route path="/" element={isAdmin ? <Navigate to="/admin" /> : <HomePage />} />
           <Route path="/about" element={<AboutKDBM />} />
           <Route path="/projects" element={<Projects />} />
           <Route path="/bulletin" element={<BulletinBoard />} />
           <Route path="/register" element={<RegistrationForm />} />
-          <Route path="/database" element={<MemberDatabase />} />
-          <Route path="/admin" element={<Navigate to="/" />} />
+          <Route path="/seed" element={<SeedDatabase />} />
+          <Route path="/admin" element={isAdmin ? <AdminDashboard /> : <Navigate to="/" />} />
+          <Route path="/database" element={isAdmin ? <MemberDatabase /> : <Navigate to="/" />} />
           <Route path="/announcements" element={<Announcements />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="*" element={<Navigate to="/" />} />
