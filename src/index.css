@@ -24,7 +24,7 @@ body {
 }
 
 .container {
-  max-width: 1100px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 0 2rem;
 }
@@ -442,7 +442,7 @@ body {
 .nav-left {
   display: flex;
   align-items: center;
-  gap: 3rem;
+  gap: 5rem;
 }
 
 .nav-actions {

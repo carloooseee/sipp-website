@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { db } from '../firebase';
 import { collection, getDocs, orderBy, query, where } from 'firebase/firestore';
 import { Briefcase, User } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export default function BulletinBoard() {
   const [businesses, setBusinesses] = useState([]);
@@ -77,6 +78,27 @@ export default function BulletinBoard() {
           )}
         </div>
       )}
+      
+      <JoinUsSection />
     </div>
   );
 }
+
+const JoinUsSection = () => (
+  <div className="card" style={{ 
+    marginTop: '5rem', 
+    padding: '4rem 2rem', 
+    textAlign: 'center', 
+    backgroundColor: 'var(--primary)', 
+    color: 'white',
+    borderRadius: '8px'
+  }}>
+    <h2 style={{ fontSize: '2.5rem', fontWeight: '900', marginBottom: '1rem' }}>Grow Your Business with KDBM</h2>
+    <p style={{ fontSize: '1.1rem', maxWidth: '600px', margin: '0 auto 2.5rem auto', opacity: '0.9' }}>
+      Are you a local business owner? Join our professional network to list your business in this directory and connect with other industry leaders.
+    </p>
+    <Link to="/register" className="btn btn-secondary" style={{ padding: '1rem 3rem', fontSize: '1.1rem', fontWeight: 'bold', textDecoration: 'none', display: 'inline-block' }}>
+      REGISTER YOUR BUSINESS
+    </Link>
+  </div>
+);

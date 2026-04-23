@@ -126,11 +126,8 @@ function App() {
               <NavLink to="/background">BACKGROUND</NavLink>
               <NavLink to="/projects">PROJECTS</NavLink>
               <NavLink to="/bulletin">BULLETIN BOARD</NavLink>
-              {isAdmin ? (
-                <NavLink to="/admin">DASHBOARD</NavLink>
-              ) : (
-                <NavLink to="/register">JOIN US</NavLink>
-              )}
+              <NavLink to="/announcements">ANNOUNCEMENTS</NavLink>
+              {isAdmin && <NavLink to="/admin">DASHBOARD</NavLink>}
             </nav>
           </div>
           <div className="nav-actions">
