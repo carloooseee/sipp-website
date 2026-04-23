@@ -293,7 +293,7 @@ body {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: linear-gradient(rgba(0,31,63,0.3), rgba(0,31,63,0.7));
+  background: linear-gradient(rgba(0,31,63,0.8), rgba(0,31,63,0.95));
 }
 
 .auth-container-v2.is-login .auth-overlay {

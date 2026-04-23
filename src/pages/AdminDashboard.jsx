@@ -60,14 +60,23 @@ export default function AdminDashboard() {
       {
         id: "sample-1",
         firstName: "Jane", lastName: "Doe", email: "jane@example.com", phone: "555-0101",
-        address: "123 Business Rd, KDBM", businessName: "Jane's Consulting", businessType: "Services",
-        businessDescription: "Expert business consulting.", role: "Member", status: "Pending", createdAt: new Date()
+        address: "123 Business Rd, KDBM", role: "Member", status: "Pending", createdAt: new Date()
       },
       {
         id: "sample-2",
         firstName: "John", lastName: "Smith", email: "john@example.com", phone: "555-0202",
-        address: "456 Tech Ave, KDBM", businessName: "Smith Tech", businessType: "IT",
-        businessDescription: "IT solutions provider.", role: "Member", status: "Approved", createdAt: new Date()
+        address: "456 Tech Ave, KDBM", role: "Member", status: "Approved", createdAt: new Date()
+      }
+    ];
+
+    const bizSamples = [
+      {
+        ownerId: "sample-1", firstName: "Jane", lastName: "Doe", 
+        businessName: "Jane's Consulting", businessType: "Services", businessDescription: "Expert business consulting.", createdAt: new Date()
+      },
+      {
+        ownerId: "sample-2", firstName: "John", lastName: "Smith", 
+        businessName: "Smith Tech", businessType: "IT", businessDescription: "IT solutions provider.", createdAt: new Date()
       }
     ];
 
@@ -75,6 +84,9 @@ export default function AdminDashboard() {
       for (const sample of samples) {
         const { id, ...data } = sample;
         await setDoc(doc(db, "members", id), data);
+      }
+      for (const biz of bizSamples) {
+        await setDoc(doc(collection(db, "bulletinBoard")), biz);
       }
       await fetchMembers();
     } catch (err) {
@@ -185,17 +197,11 @@ export default function AdminDashboard() {
                     {selectedMember === member.id && (
                       <tr style={{ backgroundColor: '#F8FAFC' }}>
                         <td colSpan="4" style={{ padding: '1.5rem', borderBottom: '2px solid var(--border)' }}>
-                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1rem' }}>
                             <div>
                               <h4 style={{ color: '#666', fontSize: '0.8rem', textTransform: 'uppercase', marginBottom: '1rem' }}>Contact Details</h4>
                               <p><strong>Phone:</strong> {member.phone || 'N/A'}</p>
                               <p><strong>Address:</strong> {member.address || 'N/A'}</p>
-                            </div>
-                            <div>
-                              <h4 style={{ color: '#666', fontSize: '0.8rem', textTransform: 'uppercase', marginBottom: '1rem' }}>Business Information</h4>
-                              <p><strong>Name:</strong> {member.businessName || 'N/A'}</p>
-                              <p><strong>Type:</strong> {member.businessType || 'N/A'}</p>
-                              <p><strong>Description:</strong> {member.businessDescription || 'N/A'}</p>
                             </div>
                           </div>
                         </td>

@@ -7,7 +7,7 @@ import {
   signInWithPopup,
   GoogleAuthProvider
 } from 'firebase/auth';
-import { doc, setDoc, serverTimestamp, getDoc } from 'firebase/firestore';
+import { doc, setDoc, serverTimestamp, getDoc, collection, addDoc } from 'firebase/firestore';
 import loginBg from '../assets/loginsignup.jpg';
 
 export default function Auth() {
@@ -27,18 +27,31 @@ export default function Auth() {
     const userRef = doc(db, "members", user.uid);
     const userDoc = await getDoc(userRef);
     if (!userDoc.exists()) {
+      const firstName = user.displayName?.split(' ')[0] || displayName.split(' ')[0] || '';
+      const lastName = user.displayName?.split(' ').slice(1).join(' ') || displayName.split(' ').slice(1).join(' ') || '';
+      
       await setDoc(userRef, {
-        firstName: user.displayName?.split(' ')[0] || displayName.split(' ')[0] || '',
-        lastName: user.displayName?.split(' ').slice(1).join(' ') || displayName.split(' ').slice(1).join(' ') || '',
+        firstName,
+        lastName,
         email: user.email,
         phone: phone || '',
         address: address || '',
-        businessName: businessName || '',
-        businessType: businessType || '',
         role: 'Member',
         status: 'Pending',
         createdAt: serverTimestamp()
       });
+
+      if (businessName) {
+        await addDoc(collection(db, "bulletinBoard"), {
+          ownerId: user.uid,
+          firstName,
+          lastName,
+          businessName: businessName,
+          businessType: businessType || '',
+          businessDescription: '', // Can be updated later
+          createdAt: serverTimestamp()
+        });
+      }
     }
   };
 

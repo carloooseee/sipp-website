@@ -12,8 +12,7 @@ export default function BulletinBoard() {
       try {
         // Query members who have a business name provided
         const q = query(
-          collection(db, "members"), 
-          where("businessName", "!=", ""),
+          collection(db, "bulletinBoard"), 
           orderBy("businessName", "asc")
         );
         const querySnapshot = await getDocs(q);
