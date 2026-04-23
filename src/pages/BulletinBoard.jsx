@@ -35,7 +35,7 @@ export default function BulletinBoard() {
   return (
     <div className="animate-fade-in">
       <div style={{ marginBottom: '3rem' }}>
-        <h1 className="page-title">Virtual Bulletin Board</h1>
+        <h1 className="page-title">Member Business Directory</h1>
         <p className="page-subtitle">Supporting and promoting our local member-owned businesses.</p>
       </div>
 

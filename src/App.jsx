@@ -14,6 +14,7 @@ import Contact from './pages/Contact';
 import Auth from './pages/Auth';
 
 import BulletinBoard from './pages/BulletinBoard';
+import Projects from './pages/Projects';
 
 import { db } from './firebase';
 import { doc, getDoc } from 'firebase/firestore';
@@ -107,10 +108,11 @@ function App() {
               KDBM
             </Link>
             <nav className="nav-links">
-              <NavLink to="/bulletin">ANNOUNCEMENT SECTION</NavLink>
-              <NavLink to="/database">LIST OF MEMBERS</NavLink>
-              <NavLink to="/about">ABOUT KDBM</NavLink>
-              <NavLink to="/contact">CONTACT PAGE</NavLink>
+              <NavLink to="/">HOME</NavLink>
+              <NavLink to="/about">ABOUT</NavLink>
+              <NavLink to="/projects">PROJECTS</NavLink>
+              <NavLink to="/bulletin">BULLETIN BOARD</NavLink>
+              <NavLink to="/register">JOIN US</NavLink>
             </nav>
           </div>
           <div className="nav-actions">
@@ -123,12 +125,13 @@ function App() {
       <main className="container content-wrapper">
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/about" element={<AboutKDBM />} />
+          <Route path="/projects" element={<Projects />} />
+          <Route path="/bulletin" element={<BulletinBoard />} />
           <Route path="/register" element={<RegistrationForm />} />
           <Route path="/database" element={<MemberDatabase />} />
-          <Route path="/bulletin" element={<BulletinBoard />} />
           <Route path="/admin" element={<Navigate to="/" />} />
           <Route path="/announcements" element={<Announcements />} />
-          <Route path="/about" element={<AboutKDBM />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
