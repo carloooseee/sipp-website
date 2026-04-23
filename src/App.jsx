@@ -16,6 +16,7 @@ import Auth from './pages/Auth';
 import BulletinBoard from './pages/BulletinBoard';
 import Projects from './pages/Projects';
 import SeedDatabase from './pages/SeedDatabase';
+import Background from './pages/Background';
 
 import { db } from './firebase';
 import { doc, getDoc, onSnapshot, query, collection, where } from 'firebase/firestore';
@@ -122,6 +123,7 @@ function App() {
             <nav className="nav-links">
               <NavLink to="/">HOME</NavLink>
               <NavLink to="/about">ABOUT</NavLink>
+              <NavLink to="/background">BACKGROUND</NavLink>
               <NavLink to="/projects">PROJECTS</NavLink>
               <NavLink to="/bulletin">BULLETIN BOARD</NavLink>
               {isAdmin ? (
@@ -142,6 +144,7 @@ function App() {
         <Routes>
           <Route path="/" element={isAdmin ? <Navigate to="/admin" replace /> : <HomePage />} />
           <Route path="/about" element={<AboutKDBM />} />
+          <Route path="/background" element={<Background />} />
           <Route path="/projects" element={<Projects />} />
           <Route path="/bulletin" element={<BulletinBoard />} />
           <Route path="/register" element={<RegistrationForm />} />
