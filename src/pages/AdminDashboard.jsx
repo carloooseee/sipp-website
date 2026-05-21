@@ -196,13 +196,58 @@ export default function AdminDashboard() {
                     </tr>
                     {selectedMember === member.id && (
                       <tr style={{ backgroundColor: '#F8FAFC' }}>
-                        <td colSpan="4" style={{ padding: '1.5rem', borderBottom: '2px solid var(--border)' }}>
-                          <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1rem' }}>
+                        <td colSpan="4" style={{ padding: '2rem', borderBottom: '2px solid var(--border)' }}>
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginBottom: '2rem' }}>
                             <div>
-                              <h4 style={{ color: '#666', fontSize: '0.8rem', textTransform: 'uppercase', marginBottom: '1rem' }}>Contact Details</h4>
-                              <p><strong>Phone:</strong> {member.phone || 'N/A'}</p>
-                              <p><strong>Address:</strong> {member.address || 'N/A'}</p>
+                              <h4 style={{ color: 'var(--primary)', fontSize: '0.85rem', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: '1rem', borderBottom: '1px solid var(--border)', paddingBottom: '0.5rem' }}>Personal Identity</h4>
+                              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', fontSize: '0.9rem', lineHeight: '1.8' }}>
+                                <div><strong>Surname:</strong> {member.lastName || 'N/A'}</div>
+                                <div><strong>First Name:</strong> {member.firstName || 'N/A'}</div>
+                                <div><strong>Middle Name:</strong> {member.middleName || 'N/A'}</div>
+                                <div><strong>Birthday:</strong> {member.birthday || 'N/A'}</div>
+                                <div><strong>Blood Type:</strong> {member.bloodType || 'N/A'}</div>
+                                <div><strong>Philhealth No.:</strong> {member.philhealthNo || member.philhealth || 'N/A'}</div>
+                                <div style={{ gridColumn: 'span 2' }}><strong>Signup Date:</strong> {member.signupDate || (member.createdAt ? (member.createdAt.toMillis ? new Date(member.createdAt.toMillis()).toLocaleDateString() : new Date(member.createdAt).toLocaleDateString()) : 'N/A')}</div>
+                              </div>
                             </div>
+                            <div>
+                              <h4 style={{ color: 'var(--primary)', fontSize: '0.85rem', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: '1rem', borderBottom: '1px solid var(--border)', paddingBottom: '0.5rem' }}>Contact Details</h4>
+                              <div style={{ fontSize: '0.9rem', lineHeight: '1.8' }}>
+                                <p><strong>Contact No.:</strong> {member.phone || 'N/A'}</p>
+                                <p><strong>E-mail Address:</strong> {member.email || 'N/A'}</p>
+                                <p><strong>Complete Address:</strong> {member.address || 'N/A'}</p>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div>
+                            <h4 style={{ color: 'var(--primary)', fontSize: '0.85rem', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: '1rem', borderBottom: '1px solid var(--border)', paddingBottom: '0.5rem' }}>Family Information</h4>
+                            {!member.familyInformation || member.familyInformation.length === 0 ? (
+                              <p style={{ fontSize: '0.9rem', color: '#666', fontStyle: 'italic' }}>No family information provided.</p>
+                            ) : (
+                              <div className="data-table-wrapper" style={{ borderRadius: '4px' }}>
+                                <table className="data-table" style={{ fontSize: '0.85rem' }}>
+                                  <thead>
+                                    <tr>
+                                      <th style={{ padding: '0.75rem 1rem' }}>Name</th>
+                                      <th style={{ padding: '0.75rem 1rem' }}>Relationship</th>
+                                      <th style={{ padding: '0.75rem 1rem' }}>Contact No.</th>
+                                      <th style={{ padding: '0.75rem 1rem' }}>Address</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {member.familyInformation.map((fam, fIdx) => (
+                                      <tr key={fIdx} style={{ backgroundColor: 'white' }}>
+                                        <td style={{ padding: '0.75rem 1rem', fontWeight: '500' }}>{fam.name || 'N/A'}</td>
+                                        <td style={{ padding: '0.75rem 1rem' }}>{fam.relationship || 'N/A'}</td>
+                                        <td style={{ padding: '0.75rem 1rem' }}>{fam.phone || 'N/A'}</td>
+                                        <td style={{ padding: '0.75rem 1rem' }}>{fam.address || 'N/A'}</td>
+                                      </tr>
+                                    ))}
+                                  </tbody>
+                                </table>
+                              </div>
+                            )}
                           </div>
                         </td>
                       </tr>

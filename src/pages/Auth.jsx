@@ -14,22 +14,25 @@ export default function Auth() {
   const [isLogin, setIsLogin] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [displayName, setDisplayName] = useState('');
-  const [phone, setPhone] = useState('');
+  
+  // Custom Registration Fields
+  const [surname, setSurname] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [middleName, setMiddleName] = useState('');
   const [address, setAddress] = useState('');
-  const [businessName, setBusinessName] = useState('');
-  const [businessType, setBusinessType] = useState('');
+  const [phone, setPhone] = useState('');
+  const [birthday, setBirthday] = useState('');
+  const [bloodType, setBloodType] = useState('');
+  const [philhealthNo, setPhilhealthNo] = useState('');
+  const [familyInformation, setFamilyInformation] = useState([]);
   
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const saveUserToFirestore = async (user) => {
+  const saveUserToFirestore = async (user, additionalData = null) => {
     const userRef = doc(db, "members", user.uid);
     const userDoc = await getDoc(userRef);
     if (!userDoc.exists()) {
-      const firstName = user.displayName?.split(' ')[0] || displayName.split(' ')[0] || '';
-      const lastName = user.displayName?.split(' ').slice(1).join(' ') || displayName.split(' ').slice(1).join(' ') || '';
-
       let role = 'Member';
       let status = 'Pending';
       if (user.email) {
@@ -45,26 +48,50 @@ export default function Auth() {
         }
       }
 
-      await setDoc(userRef, {
-        firstName,
-        lastName,
-        email: user.email,
-        phone: phone || '',
-        address: address || '',
-        role,
-        status,
-        createdAt: serverTimestamp()
+      const today = new Date();
+      const signupDateStr = today.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
       });
 
-      if (businessName) {
-        await addDoc(collection(db, "bulletinBoard"), {
-          ownerId: user.uid,
-          firstName,
-          lastName,
-          businessName: businessName,
-          businessType: businessType || '',
-          businessDescription: '', // Can be updated later
-          createdAt: serverTimestamp()
+      if (additionalData) {
+        await setDoc(userRef, {
+          firstName: additionalData.firstName || '',
+          middleName: additionalData.middleName || '',
+          lastName: additionalData.surname || '', // Maintain compatibility with older records
+          address: additionalData.address || '',
+          phone: additionalData.phone || '',
+          email: user.email || '',
+          birthday: additionalData.birthday || '',
+          bloodType: additionalData.bloodType || '',
+          philhealthNo: additionalData.philhealthNo || '',
+          philhealth: additionalData.philhealthNo || '', // Support legacy queries
+          familyInformation: additionalData.familyInformation || [],
+          role,
+          status,
+          createdAt: serverTimestamp(),
+          signupDate: signupDateStr
+        });
+      } else {
+        const gFirstName = user.displayName?.split(' ')[0] || '';
+        const gLastName = user.displayName?.split(' ').slice(1).join(' ') || '';
+        await setDoc(userRef, {
+          firstName: gFirstName,
+          middleName: '',
+          lastName: gLastName,
+          address: '',
+          phone: '',
+          email: user.email || '',
+          birthday: '',
+          bloodType: '',
+          philhealthNo: '',
+          philhealth: '',
+          familyInformation: [],
+          role,
+          status,
+          createdAt: serverTimestamp(),
+          signupDate: signupDateStr
         });
       }
     }
@@ -79,8 +106,19 @@ export default function Auth() {
         await signInWithEmailAndPassword(auth, email, password);
       } else {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        await updateProfile(userCredential.user, { displayName });
-        await saveUserToFirestore(userCredential.user);
+        const fullDisplayName = `${firstName} ${middleName ? middleName + ' ' : ''}${surname}`.trim();
+        await updateProfile(userCredential.user, { displayName: fullDisplayName });
+        await saveUserToFirestore(userCredential.user, {
+          firstName,
+          middleName,
+          surname,
+          address,
+          phone,
+          birthday,
+          bloodType,
+          philhealthNo,
+          familyInformation
+        });
       }
     } catch (err) {
       console.error(err);
@@ -104,6 +142,22 @@ export default function Auth() {
     }
   };
 
+  const handleAddFamilyMember = () => {
+    setFamilyInformation(prev => [...prev, { name: '', address: '', relationship: '', phone: '' }]);
+  };
+
+  const handleRemoveFamilyMember = (index) => {
+    setFamilyInformation(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const handleFamilyMemberChange = (index, field, value) => {
+    setFamilyInformation(prev => {
+      const copy = [...prev];
+      copy[index] = { ...copy[index], [field]: value };
+      return copy;
+    });
+  };
+
   return (
     <div className={`auth-container-v2 ${isLogin ? 'is-login' : ''}`}>
       <div className="auth-content">
@@ -117,11 +171,38 @@ export default function Auth() {
             <form onSubmit={(e) => handleAuth(e, 'signup')} style={{ marginBottom: '1rem' }}>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
                 <div className="form-group" style={{ marginBottom: '0.5rem' }}>
-                  <label className="form-label" style={{ fontSize: '0.8rem' }}>Full Name</label>
-                  <input type="text" className="form-control" style={{ padding: '0.5rem' }} value={displayName} onChange={(e) => setDisplayName(e.target.value)} required />
+                  <label className="form-label" style={{ fontSize: '0.8rem' }}>Surname</label>
+                  <input type="text" className="form-control" style={{ padding: '0.5rem' }} value={surname} onChange={(e) => setSurname(e.target.value)} required />
                 </div>
                 <div className="form-group" style={{ marginBottom: '0.5rem' }}>
-                  <label className="form-label" style={{ fontSize: '0.8rem' }}>Email</label>
+                  <label className="form-label" style={{ fontSize: '0.8rem' }}>First Name</label>
+                  <input type="text" className="form-control" style={{ padding: '0.5rem' }} value={firstName} onChange={(e) => setFirstName(e.target.value)} required />
+                </div>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+                <div className="form-group" style={{ marginBottom: '0.5rem' }}>
+                  <label className="form-label" style={{ fontSize: '0.8rem' }}>Middle Name</label>
+                  <input type="text" className="form-control" style={{ padding: '0.5rem' }} value={middleName} onChange={(e) => setMiddleName(e.target.value)} />
+                </div>
+                <div className="form-group" style={{ marginBottom: '0.5rem' }}>
+                  <label className="form-label" style={{ fontSize: '0.8rem' }}>Birthday</label>
+                  <input type="date" className="form-control" style={{ padding: '0.5rem' }} value={birthday} onChange={(e) => setBirthday(e.target.value)} required />
+                </div>
+              </div>
+
+              <div className="form-group" style={{ marginBottom: '0.5rem' }}>
+                <label className="form-label" style={{ fontSize: '0.8rem' }}>Complete Address</label>
+                <input type="text" className="form-control" style={{ padding: '0.5rem' }} value={address} onChange={(e) => setAddress(e.target.value)} required />
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+                <div className="form-group" style={{ marginBottom: '0.5rem' }}>
+                  <label className="form-label" style={{ fontSize: '0.8rem' }}>Contact No.</label>
+                  <input type="tel" className="form-control" style={{ padding: '0.5rem' }} value={phone} onChange={(e) => setPhone(e.target.value)} required />
+                </div>
+                <div className="form-group" style={{ marginBottom: '0.5rem' }}>
+                  <label className="form-label" style={{ fontSize: '0.8rem' }}>E-mail Address</label>
                   <input type="email" className="form-control" style={{ padding: '0.5rem' }} value={email} onChange={(e) => setEmail(e.target.value)} required />
                 </div>
               </div>
@@ -132,25 +213,87 @@ export default function Auth() {
                   <input type="password" className="form-control" style={{ padding: '0.5rem' }} value={password} onChange={(e) => setPassword(e.target.value)} required />
                 </div>
                 <div className="form-group" style={{ marginBottom: '0.5rem' }}>
-                  <label className="form-label" style={{ fontSize: '0.8rem' }}>Phone</label>
-                  <input type="tel" className="form-control" style={{ padding: '0.5rem' }} value={phone} onChange={(e) => setPhone(e.target.value)} />
+                  <label className="form-label" style={{ fontSize: '0.8rem' }}>Blood Type</label>
+                  <input type="text" className="form-control" style={{ padding: '0.5rem' }} value={bloodType} onChange={(e) => setBloodType(e.target.value)} required />
                 </div>
               </div>
 
-              <div className="form-group" style={{ marginBottom: '0.5rem' }}>
-                <label className="form-label" style={{ fontSize: '0.8rem' }}>Complete Address</label>
-                <input type="text" className="form-control" style={{ padding: '0.5rem' }} value={address} onChange={(e) => setAddress(e.target.value)} />
+              <div className="form-group" style={{ marginBottom: '1rem' }}>
+                <label className="form-label" style={{ fontSize: '0.8rem' }}>Philhealth No.</label>
+                <input type="text" className="form-control" style={{ padding: '0.5rem' }} value={philhealthNo} onChange={(e) => setPhilhealthNo(e.target.value)} required />
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '1rem' }}>
-                <div className="form-group" style={{ marginBottom: '0' }}>
-                  <label className="form-label" style={{ fontSize: '0.8rem' }}>Business Name</label>
-                  <input type="text" className="form-control" style={{ padding: '0.5rem' }} value={businessName} onChange={(e) => setBusinessName(e.target.value)} />
+              {/* Family Information Section */}
+              <div style={{ marginTop: '1.5rem', marginBottom: '1.5rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                  <label className="form-label" style={{ margin: 0, fontSize: '0.9rem', color: 'var(--primary)' }}>Family Information</label>
+                  <button 
+                    type="button" 
+                    onClick={handleAddFamilyMember} 
+                    className="btn btn-secondary" 
+                    style={{ padding: '0.4rem 0.8rem', fontSize: '0.75rem' }}
+                  >
+                    + Add Family Information
+                  </button>
                 </div>
-                <div className="form-group" style={{ marginBottom: '0' }}>
-                  <label className="form-label" style={{ fontSize: '0.8rem' }}>Industry Type</label>
-                  <input type="text" className="form-control" style={{ padding: '0.5rem' }} value={businessType} onChange={(e) => setBusinessType(e.target.value)} />
-                </div>
+
+                {familyInformation.map((member, index) => (
+                  <div key={index} style={{ border: '1px solid var(--border)', borderRadius: '4px', padding: '1rem', marginBottom: '1rem', backgroundColor: '#fdfdfd', position: 'relative' }}>
+                    <button 
+                      type="button" 
+                      onClick={() => handleRemoveFamilyMember(index)}
+                      style={{ position: 'absolute', top: '0.5rem', right: '0.5rem', background: 'none', border: 'none', color: 'var(--error)', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.8rem' }}
+                    >
+                      Remove
+                    </button>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', marginTop: '0.5rem' }}>
+                      <div className="form-group" style={{ marginBottom: '0.5rem' }}>
+                        <label className="form-label" style={{ fontSize: '0.75rem' }}>Name</label>
+                        <input 
+                          type="text" 
+                          className="form-control" 
+                          style={{ padding: '0.4rem' }} 
+                          value={member.name} 
+                          onChange={(e) => handleFamilyMemberChange(index, 'name', e.target.value)} 
+                          required 
+                        />
+                      </div>
+                      <div className="form-group" style={{ marginBottom: '0.5rem' }}>
+                        <label className="form-label" style={{ fontSize: '0.75rem' }}>Relationship</label>
+                        <input 
+                          type="text" 
+                          className="form-control" 
+                          style={{ padding: '0.4rem' }} 
+                          value={member.relationship} 
+                          onChange={(e) => handleFamilyMemberChange(index, 'relationship', e.target.value)} 
+                          required 
+                        />
+                      </div>
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
+                      <div className="form-group" style={{ marginBottom: '0.5rem' }}>
+                        <label className="form-label" style={{ fontSize: '0.75rem' }}>Contact No.</label>
+                        <input 
+                          type="tel" 
+                          className="form-control" 
+                          style={{ padding: '0.4rem' }} 
+                          value={member.phone} 
+                          onChange={(e) => handleFamilyMemberChange(index, 'phone', e.target.value)} 
+                        />
+                      </div>
+                      <div className="form-group" style={{ marginBottom: '0.5rem' }}>
+                        <label className="form-label" style={{ fontSize: '0.75rem' }}>Address</label>
+                        <input 
+                          type="text" 
+                          className="form-control" 
+                          style={{ padding: '0.4rem' }} 
+                          value={member.address} 
+                          onChange={(e) => handleFamilyMemberChange(index, 'address', e.target.value)} 
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
 
               <button type="submit" className="btn btn-full btn-primary" style={{ padding: '0.6rem' }} disabled={loading}>
