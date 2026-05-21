@@ -41,16 +41,7 @@ export default function HomePage() {
       {/* Hero / Overview Section */}
       <section 
         className="hero-full-width" 
-        style={{ 
-          marginBottom: '4rem', 
-          textAlign: 'center', 
-          padding: '6rem 2rem', 
-          backgroundImage: `linear-gradient(135deg, rgba(194, 65, 12, 0.85), rgba(194, 65, 12, 0.65)), url(${kdbmOverview})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-          color: 'white'
-        }}
+        style={{ backgroundImage: `url(${kdbmOverview})` }}
       >
         <h1 style={{ fontSize: '3.5rem', fontWeight: '900', marginBottom: '1rem', letterSpacing: '-0.05em', textShadow: '0 2px 8px rgba(0, 0, 0, 0.4)' }}>
           KDBM Overview
