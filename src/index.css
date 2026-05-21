@@ -3,9 +3,12 @@
 :root {
   --bg: #FFFFFF;
   --text: #333333;
-  --primary: #001F3F; /* Deep Navy Blue */
-  --secondary: #F5F5F5; /* Soft Gray */
-  --border: #E5E7EB; /* Light gray border */
+  --primary: #001F3F;
+  /* Deep Navy Blue */
+  --secondary: #F5F5F5;
+  /* Soft Gray */
+  --border: #E5E7EB;
+  /* Light gray border */
   --error: #EF4444;
   --white: #FFFFFF;
 }
@@ -76,7 +79,8 @@ body {
   border-bottom: 2px solid transparent;
 }
 
-.nav-link:hover, .nav-link.active {
+.nav-link:hover,
+.nav-link.active {
   color: var(--primary);
   border-bottom: 2px solid var(--primary);
 }
@@ -292,8 +296,11 @@ body {
 .auth-overlay::before {
   content: '';
   position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: linear-gradient(rgba(0,31,63,0.8), rgba(0,31,63,0.95));
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(rgba(0, 31, 63, 0.8), rgba(0, 31, 63, 0.95));
 }
 
 .auth-container-v2.is-login .auth-overlay {
@@ -368,7 +375,7 @@ body {
 }
 
 .btn-ghost:hover {
-  background-color: rgba(255,255,255,0.1) !important;
+  background-color: rgba(255, 255, 255, 0.1) !important;
 }
 
 .auth-overlay h1 {
@@ -384,11 +391,15 @@ body {
 }
 
 @keyframes show {
-  0%, 49.99% {
+
+  0%,
+  49.99% {
     opacity: 0;
     z-index: 1;
   }
-  50%, 100% {
+
+  50%,
+  100% {
     opacity: 1;
     z-index: 5;
   }
@@ -475,6 +486,7 @@ body {
   .nav-left {
     gap: 1.5rem;
   }
+
   .nav-links {
     gap: 1rem;
     font-size: 0.8rem;
@@ -485,39 +497,47 @@ body {
   .header {
     padding: 1rem;
   }
+
   .nav {
     flex-direction: column;
     gap: 1.5rem;
   }
+
   .nav-left {
     flex-direction: column;
     width: 100%;
     gap: 1rem;
   }
+
   .nav-links {
     flex-wrap: wrap;
     justify-content: center;
     text-align: center;
   }
+
   .nav-actions {
     width: 100%;
     justify-content: space-between;
     border-top: 1px solid var(--border);
     padding-top: 1rem;
   }
-  
+
   .auth-overlay-container {
     display: none;
   }
+
   .auth-form-section {
     width: 100%;
   }
+
   .auth-mobile-toggle {
     display: block;
   }
+
   .auth-container-v2.is-login .sign-in-container {
     transform: translateX(0);
   }
+
   .auth-container-v2.is-login .sign-up-container {
     transform: translateX(0);
     opacity: 0;
@@ -527,9 +547,54 @@ body {
   .steps-container {
     gap: 0.5rem;
   }
+
   .step-item {
     font-size: 0.7rem;
     padding-bottom: 0.5rem;
   }
 }
 
+/* Desktop / Mobile navigation utility classes */
+.desktop-nav-only {
+  display: flex !important;
+}
+
+.mobile-nav-only {
+  display: none !important;
+}
+
+/* Step Navigation Buttons & Animation */
+.step-nav-btn {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0.7;
+}
+
+.step-nav-btn:hover {
+  opacity: 1;
+}
+
+.step-nav-btn:hover .next-arrow-circle {
+  transform: scale(1.1);
+  background-color: var(--primary-hover, #002d5c);
+  box-shadow: 0 6px 15px rgba(0, 31, 63, 0.3) !important;
+}
+
+.step-nav-btn:hover .back-arrow-circle {
+  transform: scale(1.1);
+  background-color: #e2e8f0 !important;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1) !important;
+}
+
+@media (max-width: 650px) {
+  .desktop-nav-only {
+    display: none !important;
+  }
+  
+  button.mobile-nav-only {
+    display: inline-flex !important;
+  }
+  
+  div.mobile-nav-only {
+    display: block !important;
+  }
+}
