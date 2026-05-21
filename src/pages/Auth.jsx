@@ -7,7 +7,7 @@ import {
 } from 'firebase/auth';
 import { doc, setDoc, serverTimestamp, getDoc, collection, addDoc, query, where, getDocs } from 'firebase/firestore';
 import { ArrowRight, ArrowLeft } from 'lucide-react';
-import loginBg from '../assets/loginsignup.jpg';
+import { loginBg } from '../assets/pictures';
 import kdbmLogo from '../assets/kdbm_logo.png';
 
 export default function Auth() {

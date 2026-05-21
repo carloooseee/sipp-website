@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Megaphone, ArrowRight, ShieldCheck, TrendingUp, X, MapPin, Clock, User, Mail, Calendar } from 'lucide-react';
 import { db } from '../../firebase';
 import { collection, getDocs, limit, orderBy, query } from 'firebase/firestore';
-import kdbmOverviewImg from '../../assets/pictures/kdbm_overview.jpg';
+import { kdbmOverview, pic5, pic2, pic3, pic6 } from '../../assets/pictures';
 
 export default function HomePage() {
   const [latestAnnouncements, setLatestAnnouncements] = useState([]);
@@ -45,7 +45,7 @@ export default function HomePage() {
           marginBottom: '4rem', 
           textAlign: 'center', 
           padding: '6rem 2rem', 
-          backgroundImage: `linear-gradient(135deg, rgba(194, 65, 12, 0.85), rgba(194, 65, 12, 0.65)), url(${kdbmOverviewImg})`,
+          backgroundImage: `linear-gradient(135deg, rgba(194, 65, 12, 0.85), rgba(194, 65, 12, 0.65)), url(${kdbmOverview})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
@@ -60,28 +60,67 @@ export default function HomePage() {
         </p>
       </section>
 
+      <section className="photo-gallery" aria-label="Community highlights">
+        {[
+          { src: pic6, alt: 'KDBM community gathering' },
+          { src: pic3, alt: 'Professional networking' },
+          { src: pic2, alt: 'Local business collaboration' },
+        ].map((photo) => (
+          <div key={photo.alt} className="photo-gallery-item">
+            <img src={photo.src} alt={photo.alt} className="img-cover" />
+          </div>
+        ))}
+      </section>
+
       <div className="grid-2-cols-uneven">
         {/* Main Content Area */}
         <div>
           <h2 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1.5rem', color: 'var(--primary)', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
             <TrendingUp size={24} /> OUR CORE FOCUS
           </h2>
-          <div className="card" style={{ marginBottom: '2rem' }}>
-            <p style={{ lineHeight: '1.8', color: '#444' }}>
-              We provide a robust platform for professionals to showcase their businesses, connect with potential partners, and stay updated on local economic initiatives. Our goal is to build a self-sustaining ecosystem of excellence.
-            </p>
+          <div className="card" style={{ marginBottom: '2rem', padding: '2rem' }}>
+            <div className="grid-2-cols" style={{ gap: '2rem', alignItems: 'center' }}>
+              <div>
+                <p style={{ lineHeight: '1.8', color: '#444', margin: 0 }}>
+                  We provide a robust platform for professionals to showcase their businesses, connect with potential partners, and stay updated on local economic initiatives. Our goal is to build a self-sustaining ecosystem of excellence.
+                </p>
+              </div>
+              <div>
+                <img 
+                  src={pic5} 
+                  alt="Our Core Focus" 
+                  style={{ 
+                    width: '100%', 
+                    height: '140px', 
+                    objectFit: 'cover', 
+                    borderRadius: '4px',
+                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)'
+                  }} 
+                />
+              </div>
+            </div>
           </div>
 
           <div className="grid-2-cols">
-            <div className="card" style={{ backgroundColor: '#f8f9fa' }}>
-              <ShieldCheck color="var(--primary)" style={{ marginBottom: '1rem' }} />
-              <h4 style={{ fontWeight: '800', marginBottom: '0.5rem' }}>Verified Members</h4>
-              <p style={{ fontSize: '0.9rem', color: '#666' }}>Ensuring all our professional records are accurate and reliable.</p>
+            <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
+              <div style={{ height: '100px', overflow: 'hidden' }}>
+                <img src={pic6} alt="" className="img-cover" style={{ height: '100px' }} />
+              </div>
+              <div style={{ padding: '1.25rem' }}>
+                <ShieldCheck color="var(--primary)" style={{ marginBottom: '0.75rem' }} />
+                <h4 style={{ fontWeight: '800', marginBottom: '0.5rem' }}>Verified Members</h4>
+                <p style={{ fontSize: '0.9rem', color: '#666', margin: 0 }}>Ensuring all our professional records are accurate and reliable.</p>
+              </div>
             </div>
-            <div className="card" style={{ backgroundColor: '#f8f9fa' }}>
-              <TrendingUp color="var(--primary)" style={{ marginBottom: '1rem' }} />
-              <h4 style={{ fontWeight: '800', marginBottom: '0.5rem' }}>Growth Driven</h4>
-              <p style={{ fontSize: '0.9rem', color: '#666' }}>Providing resources and networking opportunities for business expansion.</p>
+            <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
+              <div style={{ height: '100px', overflow: 'hidden' }}>
+                <img src={pic3} alt="" className="img-cover" style={{ height: '100px' }} />
+              </div>
+              <div style={{ padding: '1.25rem' }}>
+                <TrendingUp color="var(--primary)" style={{ marginBottom: '0.75rem' }} />
+                <h4 style={{ fontWeight: '800', marginBottom: '0.5rem' }}>Growth Driven</h4>
+                <p style={{ fontSize: '0.9rem', color: '#666', margin: 0 }}>Providing resources and networking opportunities for business expansion.</p>
+              </div>
             </div>
           </div>
         </div>

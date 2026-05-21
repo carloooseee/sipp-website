@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Megaphone, Calendar, ArrowRight, X, MapPin, Clock, User, Mail } from 'lucide-react';
 import { db } from '../../firebase';
 import { collection, getDocs, orderBy, query } from 'firebase/firestore';
+import { pic6, galleryImages } from '../../assets/pictures';
 
 export default function Announcements() {
   const [announcements, setAnnouncements] = useState([]);
@@ -40,11 +41,15 @@ export default function Announcements() {
 
   return (
     <div className="animate-fade-in">
-      <div style={{ marginBottom: '3rem' }}>
-        <h1 className="page-title">Announcements</h1>
-        <p className="page-subtitle">Stay updated with the latest news and events from KDBM.</p>
-      </div>
-      
+      <section
+        className="page-hero"
+        style={{ backgroundImage: `url(${pic6})` }}
+        aria-labelledby="announcements-hero-title"
+      >
+        <h1 id="announcements-hero-title" className="page-hero-title">Announcements</h1>
+        <p className="page-hero-subtitle">Stay updated with the latest news and events from KDBM.</p>
+      </section>
+
       {loading ? (
         <div style={{ textAlign: 'center', padding: '3rem', color: '#666' }}>
           <p>Loading announcements...</p>
@@ -56,14 +61,17 @@ export default function Announcements() {
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-          {announcements.map((item) => (
+          {announcements.map((item, index) => (
             <div 
               key={item.id} 
               className="card" 
               style={{ 
-                padding: '1.5rem', 
+                padding: 0,
+                overflow: 'hidden',
                 transition: 'all 0.2s ease-in-out',
-                cursor: 'pointer'
+                cursor: 'pointer',
+                display: 'grid',
+                gridTemplateColumns: 'minmax(140px, 200px) 1fr',
               }}
               onClick={() => setSelectedAnnouncement(item)}
               onMouseEnter={(e) => {
@@ -75,6 +83,15 @@ export default function Announcements() {
                 e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)';
               }}
             >
+              <div style={{ minHeight: '160px', overflow: 'hidden' }}>
+                <img
+                  src={galleryImages[index % galleryImages.length]}
+                  alt=""
+                  className="img-cover"
+                  style={{ height: '100%', minHeight: '160px' }}
+                />
+              </div>
+              <div style={{ padding: '1.5rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
                 <span style={{ 
                   padding: '0.2rem 0.6rem', 
@@ -111,6 +128,7 @@ export default function Announcements() {
               >
                 Read More <ArrowRight size={16} />
               </button>
+              </div>
             </div>
           ))}
         </div>

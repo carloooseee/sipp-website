@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Briefcase, Calendar, X, User, Coins, Activity, ArrowRight } from 'lucide-react';
 import { db } from '../../firebase';
 import { collection, getDocs, orderBy, query } from 'firebase/firestore';
+import { projectImages } from '../../assets/pictures';
 
 export default function Projects() {
   const [projects, setProjects] = useState([]);
@@ -38,12 +39,18 @@ export default function Projects() {
     };
   }, [selectedProject]);
 
+  const projectsHero = projectImages[0];
+
   return (
     <div className="animate-fade-in">
-      <div style={{ marginBottom: '3rem' }}>
-        <h1 className="page-title">Projects</h1>
-        <p className="page-subtitle">Past and future initiatives driving our community forward.</p>
-      </div>
+      <section
+        className="page-hero"
+        style={{ backgroundImage: `url(${projectsHero})` }}
+        aria-labelledby="projects-hero-title"
+      >
+        <h1 id="projects-hero-title" className="page-hero-title">Projects</h1>
+        <p className="page-hero-subtitle">Past and future initiatives driving our community forward.</p>
+      </section>
 
       {loading ? (
         <div style={{ textAlign: 'center', padding: '3rem', color: '#666', gridColumn: '1 / -1' }}>
@@ -56,87 +63,108 @@ export default function Projects() {
         </div>
       ) : (
         <div className="grid">
-          {projects.map((project) => (
-            <div 
-              key={project.id} 
-              className="card" 
-              style={{ 
-                position: 'relative', 
-                overflow: 'hidden',
-                cursor: 'pointer',
-                transition: 'all 0.2s ease-in-out',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                padding: '2rem 1.5rem 1.5rem 1.5rem',
-                marginBottom: 0
-              }}
-              onClick={() => setSelectedProject(project)}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-4px)';
-                e.currentTarget.style.boxShadow = '0 12px 20px -3px rgba(0, 0, 0, 0.1), 0 4px 8px -2px rgba(0, 0, 0, 0.05)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'none';
-                e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)';
-              }}
-            >
-              <div>
-                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', marginBottom: '1rem' }}>
-                  <span style={{ 
-                    padding: '0.2rem 0.6rem', 
-                    backgroundColor: project.type === 'Past' ? '#E2E8F0' : '#C6F6D5',
-                    color: project.type === 'Past' ? '#4A5568' : '#22543D',
-                    borderRadius: '999px',
-                    fontSize: '0.65rem',
-                    fontWeight: '700'
+          {projects.map((project, index) => {
+            const projectImg = projectImages[index % projectImages.length];
+            return (
+              <div 
+                key={project.id} 
+                className="card" 
+                style={{ 
+                  position: 'relative', 
+                  overflow: 'hidden',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease-in-out',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  padding: 0,
+                  marginBottom: 0
+                }}
+                onClick={() => setSelectedProject(project)}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-4px)';
+                  e.currentTarget.style.boxShadow = '0 12px 20px -3px rgba(0, 0, 0, 0.1), 0 4px 8px -2px rgba(0, 0, 0, 0.05)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'none';
+                  e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)';
+                }}
+              >
+                {/* Banner Image */}
+                <div style={{ position: 'relative', height: '140px', overflow: 'hidden' }}>
+                  <img 
+                    src={projectImg} 
+                    alt={project.title} 
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                  />
+                  <div style={{
+                    position: 'absolute',
+                    top: '0.75rem',
+                    left: '0.75rem',
+                    display: 'flex',
+                    gap: '0.35rem',
+                    zIndex: 2
                   }}>
-                    {project.type.toUpperCase()}
-                  </span>
-                  {project.status && (
                     <span style={{ 
                       padding: '0.2rem 0.6rem', 
-                      backgroundColor: 
-                        project.status === 'Completed' ? '#D1FAE5' :
-                        project.status === 'In Progress' ? '#DBEAFE' :
-                        project.status === 'Delayed' ? '#FEE2E2' : '#FEF3C7',
-                      color: 
-                        project.status === 'Completed' ? '#065F46' :
-                        project.status === 'In Progress' ? '#1E40AF' :
-                        project.status === 'Delayed' ? '#991B1B' : '#92400E',
+                      backgroundColor: project.type === 'Past' ? 'rgba(226, 232, 240, 0.9)' : 'rgba(198, 246, 213, 0.9)',
+                      color: project.type === 'Past' ? '#4A5568' : '#22543D',
                       borderRadius: '999px',
                       fontSize: '0.65rem',
-                      fontWeight: '700'
+                      fontWeight: '700',
+                      backdropFilter: 'blur(4px)'
                     }}>
-                      {project.status.toUpperCase()}
+                      {project.type.toUpperCase()}
                     </span>
-                  )}
-                </div>
-                
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem', marginBottom: '1rem' }}>
-                  <div style={{ padding: '0.5rem', backgroundColor: 'var(--secondary)', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    {project.type === 'Past' ? <Briefcase size={20} color="var(--primary)" /> : <Calendar size={20} color="var(--primary)" />}
+                    {project.status && (
+                      <span style={{ 
+                        padding: '0.2rem 0.6rem', 
+                        backgroundColor: 
+                          project.status === 'Completed' ? 'rgba(209, 250, 229, 0.9)' :
+                          project.status === 'In Progress' ? 'rgba(219, 234, 254, 0.9)' :
+                          project.status === 'Delayed' ? 'rgba(254, 226, 226, 0.9)' : 'rgba(254, 243, 199, 0.9)',
+                        color: 
+                          project.status === 'Completed' ? '#065F46' :
+                          project.status === 'In Progress' ? '#1E40AF' :
+                          project.status === 'Delayed' ? '#991B1B' : '#92400E',
+                        borderRadius: '999px',
+                        fontSize: '0.65rem',
+                        fontWeight: '700',
+                        backdropFilter: 'blur(4px)'
+                      }}>
+                        {project.status.toUpperCase()}
+                      </span>
+                    )}
                   </div>
-                  <h3 style={{ fontSize: '1.2rem', fontWeight: '850', color: 'var(--primary)', lineHeight: '1.2' }}>
-                    {project.title}
-                  </h3>
                 </div>
-                
-                <p style={{ color: '#555', lineHeight: '1.5', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
-                  {project.shortDescription || project.description}
-                </p>
-              </div>
-              
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid var(--border)', paddingTop: '1rem', marginTop: 'auto' }}>
-                <div style={{ fontSize: '0.8rem', color: '#888', fontWeight: '600' }}>
-                  Timeline: {project.date}
+
+                <div style={{ padding: '1.5rem', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                  <div>
+                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem', marginBottom: '0.75rem' }}>
+                      <div style={{ padding: '0.4rem', backgroundColor: 'var(--secondary)', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        {project.type === 'Past' ? <Briefcase size={16} color="var(--primary)" /> : <Calendar size={16} color="var(--primary)" />}
+                      </div>
+                      <h3 style={{ fontSize: '1.15rem', fontWeight: '850', color: 'var(--primary)', lineHeight: '1.2' }}>
+                        {project.title}
+                      </h3>
+                    </div>
+                    
+                    <p style={{ color: '#555', lineHeight: '1.5', fontSize: '0.85rem', marginBottom: '1.25rem' }}>
+                      {project.shortDescription || project.description}
+                    </p>
+                  </div>
+                  
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid var(--border)', paddingTop: '0.75rem', marginTop: 'auto' }}>
+                    <div style={{ fontSize: '0.75rem', color: '#888', fontWeight: '600' }}>
+                      Timeline: {project.date}
+                    </div>
+                    <span className="btn-link" style={{ color: 'var(--primary)', fontWeight: '700', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.25rem', padding: 0 }}>
+                      Details <ArrowRight size={14} />
+                    </span>
+                  </div>
                 </div>
-                <span className="btn-link" style={{ color: 'var(--primary)', fontWeight: '700', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '0.25rem', padding: 0 }}>
-                  Details <ArrowRight size={14} />
-                </span>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
@@ -180,40 +208,11 @@ export default function Projects() {
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
-              padding: '1.5rem 1.5rem 1rem 1.5rem',
+              padding: '1.25rem 1.5rem',
               borderBottom: '1px solid var(--border)',
               backgroundColor: 'var(--secondary)'
             }}>
-              <div style={{ display: 'flex', gap: '0.5rem' }}>
-                <span style={{ 
-                  padding: '0.2rem 0.6rem', 
-                  backgroundColor: selectedProject.type === 'Past' ? '#E2E8F0' : '#C6F6D5',
-                  color: selectedProject.type === 'Past' ? '#4A5568' : '#22543D',
-                  borderRadius: '999px',
-                  fontSize: '0.7rem',
-                  fontWeight: '700'
-                }}>
-                  {selectedProject.type.toUpperCase()}
-                </span>
-                {selectedProject.status && (
-                  <span style={{ 
-                    padding: '0.2rem 0.6rem', 
-                    backgroundColor: 
-                      selectedProject.status === 'Completed' ? '#D1FAE5' :
-                      selectedProject.status === 'In Progress' ? '#DBEAFE' :
-                      selectedProject.status === 'Delayed' ? '#FEE2E2' : '#FEF3C7',
-                    color: 
-                      selectedProject.status === 'Completed' ? '#065F46' :
-                      selectedProject.status === 'In Progress' ? '#1E40AF' :
-                      selectedProject.status === 'Delayed' ? '#991B1B' : '#92400E',
-                    borderRadius: '999px',
-                    fontSize: '0.7rem',
-                    fontWeight: '700'
-                  }}>
-                    {selectedProject.status.toUpperCase()}
-                  </span>
-                )}
-              </div>
+              <span style={{ fontWeight: '700', fontSize: '0.85rem', color: 'var(--primary)', letterSpacing: '0.05em' }}>PROJECT DETAILS</span>
               <button 
                 onClick={() => setSelectedProject(null)}
                 style={{
@@ -233,6 +232,56 @@ export default function Projects() {
               >
                 <X size={20} />
               </button>
+            </div>
+
+            {/* Banner Image in Modal */}
+            <div style={{ position: 'relative', height: '200px', overflow: 'hidden' }}>
+              <img 
+                src={projectImages[projects.indexOf(selectedProject) % projectImages.length]} 
+                alt={selectedProject.title} 
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+              />
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                background: 'linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.4))'
+              }}></div>
+              
+              <div style={{ position: 'absolute', bottom: '1rem', left: '1.5rem', display: 'flex', gap: '0.5rem' }}>
+                <span style={{ 
+                  padding: '0.2rem 0.6rem', 
+                  backgroundColor: selectedProject.type === 'Past' ? 'rgba(226, 232, 240, 0.95)' : 'rgba(198, 246, 213, 0.95)',
+                  color: selectedProject.type === 'Past' ? '#4A5568' : '#22543D',
+                  borderRadius: '999px',
+                  fontSize: '0.7rem',
+                  fontWeight: '700',
+                  backdropFilter: 'blur(4px)'
+                }}>
+                  {selectedProject.type.toUpperCase()}
+                </span>
+                {selectedProject.status && (
+                  <span style={{ 
+                    padding: '0.2rem 0.6rem', 
+                    backgroundColor: 
+                      selectedProject.status === 'Completed' ? 'rgba(209, 250, 229, 0.95)' :
+                      selectedProject.status === 'In Progress' ? 'rgba(219, 234, 254, 0.95)' :
+                      selectedProject.status === 'Delayed' ? 'rgba(254, 226, 226, 0.95)' : 'rgba(254, 243, 199, 0.95)',
+                    color: 
+                      selectedProject.status === 'Completed' ? '#065F46' :
+                      selectedProject.status === 'In Progress' ? '#1E40AF' :
+                      selectedProject.status === 'Delayed' ? '#991B1B' : '#92400E',
+                    borderRadius: '999px',
+                    fontSize: '0.7rem',
+                    fontWeight: '700',
+                    backdropFilter: 'blur(4px)'
+                  }}>
+                    {selectedProject.status.toUpperCase()}
+                  </span>
+                )}
+              </div>
             </div>
 
             {/* Content */}
