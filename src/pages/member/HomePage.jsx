@@ -39,23 +39,26 @@ export default function HomePage() {
   return (
     <div className="animate-fade-in">
       {/* Hero / Overview Section */}
-      <section 
-        className="hero-full-width" 
+      <section
+        className="hero-full-width"
         style={{ backgroundImage: `url(${kdbmOverview})` }}
       >
-        <h1 style={{ fontSize: '3.5rem', fontWeight: '900', marginBottom: '1rem', letterSpacing: '-0.05em', textShadow: '0 2px 8px rgba(0, 0, 0, 0.4)' }}>
-          KDBM Overview
+        <h1 style={{ fontSize: 'clamp(2rem, 5vw, 3.25rem)', fontWeight: '900', marginBottom: '0.75rem', letterSpacing: '-0.03em', textShadow: '0 2px 8px rgba(0, 0, 0, 0.4)' }}>
+          KDBM
         </h1>
-        <p style={{ fontSize: '1.25rem', maxWidth: '700px', margin: '0 auto', opacity: '0.95', lineHeight: '1.6', textShadow: '0 1px 4px rgba(0, 0, 0, 0.4)' }}>
-          The KDBM Professional Network is dedicated to fostering growth, collaboration, and professional excellence among our local community members.
+        <p style={{ fontSize: '1.1rem', maxWidth: '720px', margin: '0 auto 1rem', opacity: '0.95', lineHeight: '1.5', textShadow: '0 1px 4px rgba(0, 0, 0, 0.4)' }}>
+          Kababaihan ng Dasmariñas sa Bagong Milenyo
+        </p>
+        <p style={{ fontSize: '1.15rem', maxWidth: '700px', margin: '0 auto', opacity: '0.95', lineHeight: '1.6', textShadow: '0 1px 4px rgba(0, 0, 0, 0.4)' }}>
+          An all-women volunteer organization in Dasmariñas, Cavite—supporting the community, livelihood programs, and local government initiatives for family and community welfare.
         </p>
       </section>
 
       <section className="photo-gallery" aria-label="Community highlights">
         {[
-          { src: pic6, alt: 'KDBM community gathering' },
-          { src: pic3, alt: 'Professional networking' },
-          { src: pic2, alt: 'Local business collaboration' },
+          { src: pic6, alt: 'KDBM community activities' },
+          { src: pic3, alt: 'Women volunteers in Dasmariñas' },
+          { src: pic2, alt: 'Community welfare programs' },
         ].map((photo) => (
           <div key={photo.alt} className="photo-gallery-item">
             <img src={photo.src} alt={photo.alt} className="img-cover" />
@@ -73,46 +76,51 @@ export default function HomePage() {
             <div className="grid-2-cols" style={{ gap: '2rem', alignItems: 'center' }}>
               <div>
                 <p style={{ lineHeight: '1.8', color: '#444', margin: 0 }}>
-                  We provide a robust platform for professionals to showcase their businesses, connect with potential partners, and stay updated on local economic initiatives. Our goal is to build a self-sustaining ecosystem of excellence.
+                  KDBM mobilizes women volunteers to serve neighborhoods across Dasmariñas through community welfare activities, livelihood support, and cooperation with local government programs. This site helps members stay connected, share updates, and highlight community initiatives.
                 </p>
               </div>
               <div>
-                <img 
-                  src={pic5} 
-                  alt="Our Core Focus" 
-                  style={{ 
-                    width: '100%', 
-                    height: '140px', 
-                    objectFit: 'cover', 
+                <img
+                  src={pic5}
+                  alt="Our Core Focus"
+                  style={{
+                    width: '100%',
+                    height: '140px',
+                    objectFit: 'cover',
                     borderRadius: '4px',
                     boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)'
-                  }} 
+                  }}
                 />
               </div>
             </div>
           </div>
 
           <div className="grid-2-cols">
-            <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
-              <div style={{ height: '100px', overflow: 'hidden' }}>
-                <img src={pic6} alt="" className="img-cover" style={{ height: '100px' }} />
+            {[
+              {
+                title: "Women's Volunteerism",
+                description: 'An all-women organization that helps the community and supports programs for member and family welfare.',
+                img: pic6,
+                icon: <ShieldCheck color="var(--primary)" style={{ marginBottom: '0.75rem' }} />,
+              },
+              {
+                title: 'Livelihood & Welfare',
+                description: 'Supports livelihood initiatives and participates in local activities connected with women, families, and community development.',
+                img: pic3,
+                icon: <TrendingUp color="var(--primary)" style={{ marginBottom: '0.75rem' }} />,
+              },
+            ].map((item) => (
+              <div key={item.title} className="card" style={{ padding: 0, overflow: 'hidden' }}>
+                <div style={{ height: '100px', overflow: 'hidden' }}>
+                  <img src={item.img} alt="" className="img-cover" style={{ height: '100px' }} />
+                </div>
+                <div style={{ padding: '1.25rem' }}>
+                  {item.icon}
+                  <h4 style={{ fontWeight: '800', marginBottom: '0.5rem' }}>{item.title}</h4>
+                  <p style={{ fontSize: '0.9rem', color: '#666', margin: 0 }}>{item.description}</p>
+                </div>
               </div>
-              <div style={{ padding: '1.25rem' }}>
-                <ShieldCheck color="var(--primary)" style={{ marginBottom: '0.75rem' }} />
-                <h4 style={{ fontWeight: '800', marginBottom: '0.5rem' }}>Verified Members</h4>
-                <p style={{ fontSize: '0.9rem', color: '#666', margin: 0 }}>Ensuring all our professional records are accurate and reliable.</p>
-              </div>
-            </div>
-            <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
-              <div style={{ height: '100px', overflow: 'hidden' }}>
-                <img src={pic3} alt="" className="img-cover" style={{ height: '100px' }} />
-              </div>
-              <div style={{ padding: '1.25rem' }}>
-                <TrendingUp color="var(--primary)" style={{ marginBottom: '0.75rem' }} />
-                <h4 style={{ fontWeight: '800', marginBottom: '0.5rem' }}>Growth Driven</h4>
-                <p style={{ fontSize: '0.9rem', color: '#666', margin: 0 }}>Providing resources and networking opportunities for business expansion.</p>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
 
@@ -127,12 +135,12 @@ export default function HomePage() {
             </p>
           ) : (
             latestAnnouncements.map(announcement => (
-              <div 
-                key={announcement.id} 
-                className="card" 
-                style={{ 
-                  marginBottom: '1.25rem', 
-                  padding: '1.25rem', 
+              <div
+                key={announcement.id}
+                className="card"
+                style={{
+                  marginBottom: '1.25rem',
+                  padding: '1.25rem',
                   borderLeft: '4px solid var(--primary)',
                   cursor: 'pointer',
                   transition: 'all 0.2s ease-in-out'
@@ -150,8 +158,8 @@ export default function HomePage() {
                 <span style={{ fontSize: '0.75rem', fontWeight: '700', color: '#999', textTransform: 'uppercase' }}>{announcement.date}</span>
                 <h3 style={{ fontSize: '1.1rem', fontWeight: '800', margin: '0.5rem 0' }}>{announcement.title}</h3>
                 <p style={{ fontSize: '0.9rem', color: '#555', marginBottom: '1rem' }}>{announcement.summary || announcement.content}</p>
-                <button 
-                  className="btn-link" 
+                <button
+                  className="btn-link"
                   style={{ padding: 0, fontSize: '0.8rem' }}
                   onClick={(e) => {
                     e.stopPropagation();
@@ -168,7 +176,7 @@ export default function HomePage() {
 
       {/* Modal Overlay */}
       {selectedAnnouncement && (
-        <div 
+        <div
           style={{
             position: 'fixed',
             top: 0,
@@ -185,7 +193,7 @@ export default function HomePage() {
           }}
           onClick={() => setSelectedAnnouncement(null)}
         >
-          <div 
+          <div
             style={{
               backgroundColor: 'white',
               borderRadius: '8px',
@@ -210,18 +218,18 @@ export default function HomePage() {
               borderBottom: '1px solid var(--border)',
               backgroundColor: 'var(--secondary)'
             }}>
-              <span style={{ 
-                padding: '0.2rem 0.6rem', 
-                backgroundColor: 'var(--primary)', 
-                color: 'white', 
-                borderRadius: '4px', 
-                fontSize: '0.75rem', 
+              <span style={{
+                padding: '0.2rem 0.6rem',
+                backgroundColor: 'var(--primary)',
+                color: 'white',
+                borderRadius: '4px',
+                fontSize: '0.75rem',
                 fontWeight: '700',
                 textTransform: 'uppercase'
               }}>
                 {selectedAnnouncement.category || 'Announcement'}
               </span>
-              <button 
+              <button
                 onClick={() => setSelectedAnnouncement(null)}
                 style={{
                   background: 'none',
@@ -248,7 +256,7 @@ export default function HomePage() {
                 <Calendar size={14} />
                 {selectedAnnouncement.date}
               </div>
-              
+
               <h2 style={{ fontSize: '1.75rem', fontWeight: '800', color: 'var(--primary)', marginBottom: '1rem', lineHeight: '1.3' }}>
                 {selectedAnnouncement.title}
               </h2>
@@ -292,10 +300,10 @@ export default function HomePage() {
                 </div>
               )}
 
-              <p style={{ 
-                color: '#333', 
-                lineHeight: '1.7', 
-                fontSize: '1rem', 
+              <p style={{
+                color: '#333',
+                lineHeight: '1.7',
+                fontSize: '1rem',
                 whiteSpace: 'pre-wrap'
               }}>
                 {selectedAnnouncement.content}
@@ -310,8 +318,8 @@ export default function HomePage() {
               justifyContent: 'flex-end',
               backgroundColor: 'var(--secondary)'
             }}>
-              <button 
-                onClick={() => setSelectedAnnouncement(null)} 
+              <button
+                onClick={() => setSelectedAnnouncement(null)}
                 className="btn"
                 style={{ padding: '0.5rem 1.5rem' }}
               >
@@ -324,4 +332,3 @@ export default function HomePage() {
     </div>
   );
 }
-

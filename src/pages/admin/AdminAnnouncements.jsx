@@ -107,7 +107,7 @@ export default function AdminAnnouncements() {
         <p className="page-subtitle">Publish dynamic updates, events, and news for members.</p>
       </div>
 
-      <div className="grid">
+      <div className="admin-layout">
         {/* Create Announcement Form */}
         <div className="card" style={{ height: 'fit-content' }}>
           <h2 style={{ fontSize: '1.25rem', fontWeight: '800', color: 'var(--primary)', borderBottom: '1px solid var(--border)', paddingBottom: '0.75rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>

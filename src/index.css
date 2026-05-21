@@ -157,6 +157,47 @@ body {
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
 }
 
+.project-image {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  max-height: 140px;
+}
+
+@media (max-width: 768px) {
+  .project-image {
+    max-height: 80px;
+  }
+}
+.modal-image {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  max-height: 200px;
+}
+
+@media (max-width: 768px) {
+  .modal-image {
+    max-height: 120px;
+  }
+}
+.responsive-img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  min-height: 350px;
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .responsive-img {
+    min-height: 180px;
+    max-height: 260px;
+  }
+}
+
 .photo-gallery-item img {
   width: 100%;
   height: 100%;
@@ -356,7 +397,7 @@ body {
 
 .grid-2-cols-uneven {
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: 3rem;
 }
 
@@ -364,6 +405,251 @@ body {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
   gap: 1.5rem;
+}
+
+/* Admin pages: form (1) | list (2) */
+.admin-layout {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+/* Bulletin board: businesses left, register panel right */
+.bulletin-board-layout {
+  display: grid;
+  grid-template-columns: 1fr minmax(220px, 280px);
+  gap: 2rem;
+  align-items: start;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.bulletin-board-main {
+  min-width: 0;
+  width: 100%;
+}
+
+.bulletin-board-main .grid {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+}
+
+.bulletin-card__header {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.bulletin-card__icon {
+  padding: 0.75rem;
+  background-color: var(--secondary);
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.bulletin-card__meta {
+  min-width: 0;
+  flex: 1;
+}
+
+.bulletin-card__title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 0.1rem;
+  word-break: break-word;
+}
+
+.bulletin-card__contact {
+  border-top: 1px solid var(--border);
+  padding-top: 1.25rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: #888;
+  word-break: break-word;
+}
+
+.bulletin-register-panel {
+  position: sticky;
+  top: 6rem;
+  padding: 0;
+  overflow: hidden;
+  text-align: center;
+  color: white;
+  border-radius: 8px;
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.bulletin-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 0;
+  overflow: hidden;
+  margin-bottom: 0;
+}
+
+.bulletin-card__image {
+  height: 120px;
+}
+
+.bulletin-card__body {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  min-width: 0;
+}
+
+.bulletin-card__badge {
+  background-color: transparent;
+  border-color: var(--primary);
+  color: var(--primary);
+  text-transform: uppercase;
+  font-size: 0.7rem;
+}
+
+.bulletin-card__description {
+  color: #555;
+  font-size: 0.95rem;
+  flex-grow: 1;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.bulletin-board-loading,
+.bulletin-board-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 3rem 1.5rem;
+}
+
+.bulletin-board-empty {
+  border-style: dotted;
+}
+
+.bulletin-board-empty h3 {
+  color: #999;
+  margin-bottom: 0.5rem;
+}
+
+.bulletin-board-empty p {
+  color: #ccc;
+  margin: 0;
+}
+
+.bulletin-register-panel__bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.bulletin-register-panel__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(194, 24, 21, 0.92), rgba(194, 65, 12, 0.78));
+}
+
+.bulletin-register-panel__content {
+  position: relative;
+  z-index: 1;
+  padding: 1.75rem 1.25rem;
+}
+
+.bulletin-register-panel__content h2 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  margin-bottom: 0.75rem;
+  line-height: 1.3;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+}
+
+.bulletin-register-panel__content p {
+  font-size: 0.85rem;
+  line-height: 1.5;
+  margin: 0 0 1.25rem;
+  opacity: 0.95;
+}
+
+.bulletin-register-panel__content .btn {
+  font-size: 0.8rem;
+  padding: 0.65rem 1rem;
+  width: 100%;
+  text-decoration: none;
+}
+
+@media (max-width: 1024px) {
+  .bulletin-board-layout {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .bulletin-register-panel {
+    position: relative;
+    top: auto;
+    min-height: 200px;
+  }
+
+  .bulletin-board-main .grid {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .bulletin-board-layout {
+    gap: 1.25rem;
+  }
+
+  .bulletin-board-main .grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .bulletin-card__title {
+    font-size: 1.1rem;
+  }
+
+  .bulletin-register-panel {
+    min-height: auto;
+  }
+
+  .bulletin-register-panel__content {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .bulletin-register-panel__content h2 {
+    font-size: 1.35rem;
+  }
+
+  .bulletin-register-panel__content p {
+    font-size: 0.9rem;
+  }
+
+  .bulletin-register-panel__content .btn {
+    font-size: 0.85rem;
+    padding: 0.75rem 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .bulletin-card__header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .bulletin-card__icon {
+    align-self: flex-start;
+  }
+
 }
 
 /* ---------------------------------------------------------
@@ -802,5 +1088,145 @@ body {
 
   div.mobile-nav-only {
     display: block !important;
+  }
+}
+
+/* ============================================================
+   COMPREHENSIVE MOBILE LAYOUT FIXES  (max-width: 768px)
+   ============================================================ */
+@media (max-width: 768px) {
+
+  /* --- General spacing --- */
+  .content-wrapper {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
+
+  .card {
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+  }
+
+  /* --- Photo gallery: 1 column on mobile --- */
+  .photo-gallery {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  /* --- Hero sections --- */
+  .hero-full-width {
+    padding: 3rem 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .page-hero {
+    min-height: 160px;
+    padding: 2.5rem 1rem;
+    margin-bottom: 2rem;
+  }
+
+  /* --- Main .grid (auto-fill cards) → single column --- */
+  .grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem;
+  }
+
+  /* --- Admin layout (form | list  1:2) → single column --- */
+  .admin-layout {
+    grid-template-columns: 1fr;
+  }
+
+  /* --- Bulletin board --- */
+  .bulletin-board-layout {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .bulletin-card__image {
+    height: 90px;
+  }
+
+  /* --- Images inside cards --- */
+  .project-image,
+  .modal-image {
+    max-height: 140px;
+  }
+
+  /* --- AboutKDBM accent border offset fix on mobile --- */
+  .responsive-img + div {
+    display: none;
+  }
+
+  /* --- Page title sizing --- */
+  .page-title {
+    font-size: 1.5rem;
+  }
+
+  .page-subtitle {
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+  }
+
+  /* --- Form controls: full width --- */
+  .form-control {
+    font-size: 0.95rem;
+  }
+
+  /* --- Buttons --- */
+  .btn {
+    padding: 0.65rem 1.25rem;
+    font-size: 0.9rem;
+  }
+
+  /* --- Steps container --- */
+  .steps-container {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  /* --- Data tables: allow horizontal scroll --- */
+  .data-table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* --- Grid auto-fit → single column --- */
+  .grid-auto-fit {
+    grid-template-columns: 1fr !important;
+    gap: 1rem;
+  }
+
+  /* --- grid-2-cols inside cards (nested) --- */
+  .card .grid-2-cols {
+    grid-template-columns: 1fr !important;
+    gap: 1rem;
+  }
+}
+
+/* ============================================================
+   EXTRA SMALL  (max-width: 480px)
+   ============================================================ */
+@media (max-width: 480px) {
+  .hero-full-width {
+    padding: 2rem 1rem;
+  }
+
+  .card {
+    padding: 1rem;
+  }
+
+  .page-title {
+    font-size: 1.35rem;
+  }
+
+  .photo-gallery-item {
+    aspect-ratio: 16 / 9;
+  }
+
+  /* Modal full-screen on tiny screens */
+  [style*="maxWidth: '650px'"] {
+    max-width: 100% !important;
+    border-radius: 0 !important;
   }
 }

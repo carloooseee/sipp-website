@@ -91,11 +91,7 @@ export default function Projects() {
               >
                 {/* Banner Image */}
                 <div style={{ position: 'relative', height: '140px', overflow: 'hidden' }}>
-                  <img 
-                    src={projectImg} 
-                    alt={project.title} 
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
-                  />
+                  <img src={projectImg} alt={project.title} className="project-image" />
                   <div style={{
                     position: 'absolute',
                     top: '0.75rem',
@@ -236,11 +232,7 @@ export default function Projects() {
 
             {/* Banner Image in Modal */}
             <div style={{ position: 'relative', height: '200px', overflow: 'hidden' }}>
-              <img 
-                src={projectImages[projects.indexOf(selectedProject) % projectImages.length]} 
-                alt={selectedProject.title} 
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
-              />
+              <img src={projectImages[projects.indexOf(selectedProject) % projectImages.length]} alt={selectedProject.title} className="modal-image" />
               <div style={{
                 position: 'absolute',
                 top: 0,
