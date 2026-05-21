@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { db } from '../firebase';
-import { collection, doc, setDoc, serverTimestamp, query, where, getDocs, updateDoc } from 'firebase/firestore';
+import { db, auth } from '../firebase';
+import { collection, doc, setDoc, serverTimestamp, query, where, getDocs, updateDoc, deleteDoc } from 'firebase/firestore';
 import { Database, ShieldAlert, CheckCircle, UserPlus } from 'lucide-react';
 
 export default function SeedDatabase() {
@@ -19,13 +19,47 @@ export default function SeedDatabase() {
         throw new Error(`No user found with email ${email}. Please sign up first!`);
       }
 
-      const userDoc = querySnapshot.docs[0];
-      await updateDoc(doc(db, "members", userDoc.id), {
-        role: "Admin",
-        status: "Approved"
-      });
+      await Promise.all(
+        querySnapshot.docs.map((memberDoc) =>
+          updateDoc(doc(db, "members", memberDoc.id), {
+            role: "Admin",
+            status: "Approved",
+          })
+        )
+      );
 
-      setStatus(`Success! ${email} is now an Admin.`);
+      // Also set Admin on the signed-in user's UID doc (what the app reads on login)
+      if (auth.currentUser?.email?.trim().toLowerCase() === email.trim().toLowerCase()) {
+        await setDoc(
+          doc(db, "members", auth.currentUser.uid),
+          { role: "Admin", status: "Approved", email: auth.currentUser.email },
+          { merge: true }
+        );
+      }
+
+      setStatus(`Success! ${email} is now an Admin (${querySnapshot.docs.length} record(s) updated).`);
+    } catch (error) {
+      console.error(error);
+      setStatus("Error: " + error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const promoteCurrentToAdmin = async () => {
+    if (!auth.currentUser) {
+      setStatus("Error: No user is currently logged in!");
+      return;
+    }
+    setLoading(true);
+    setStatus("Promoting current user...");
+    try {
+      await setDoc(
+        doc(db, "members", auth.currentUser.uid),
+        { role: "Admin", status: "Approved", email: auth.currentUser.email },
+        { merge: true }
+      );
+      setStatus(`Success! Your account (${auth.currentUser.email}) is now an Admin!`);
     } catch (error) {
       console.error(error);
       setStatus("Error: " + error.message);
@@ -38,20 +72,32 @@ export default function SeedDatabase() {
     setLoading(true);
     setStatus("Seeding samples...");
     try {
+      // Clean up existing seeded documents using static IDs first
+      const docIds = ["alice_walker_seed", "bob_ross_seed", "admin_user_seed"];
+      for (const id of docIds) {
+        try {
+          await deleteDoc(doc(db, "members", id));
+        } catch (err) {
+          console.warn(`Could not delete doc ${id}:`, err);
+        }
+      }
+
       const members = [
-        { firstName: "Alice", lastName: "Walker", email: "alice@example.com", role: "Member", status: "Approved" },
-        { firstName: "Bob", lastName: "Ross", email: "bob@example.com", role: "Member", status: "Pending" }
+        { id: "alice_walker_seed", firstName: "Alice", lastName: "Walker", email: "alice@example.com", role: "Member", status: "Approved" },
+        { id: "bob_ross_seed", firstName: "Bob", lastName: "Ross", email: "bob@example.com", role: "Member", status: "Pending" },
+        { id: "admin_user_seed", firstName: "Admin", lastName: "User", email: "admin@kdbm.com", role: "Admin", status: "Approved" }
       ];
 
       for (const m of members) {
-        await setDoc(doc(collection(db, "members")), {
-          ...m,
-          phone: "555-0000",
-          address: "123 KDBM St.",
+        const { id, ...data } = m;
+        await setDoc(doc(db, "members", id), {
+          ...data,
+          phone: data.role === "Admin" ? "555-9999" : "555-0000",
+          address: data.role === "Admin" ? "999 Admin Way" : "123 KDBM St.",
           createdAt: serverTimestamp()
         });
       }
-      setStatus("Samples seeded successfully!");
+      setStatus("Reseeded successfully! 2 members and 1 admin generated.");
     } catch (error) {
       setStatus("Error: " + error.message);
     } finally {
@@ -81,8 +127,16 @@ export default function SeedDatabase() {
           onClick={promoteToAdmin} 
           disabled={loading}
           className="btn btn-full btn-primary"
+          style={{ marginBottom: '1rem' }}
         >
           {loading ? "PROCESSING..." : "PROMOTE TO ADMIN"}
+        </button>
+        <button 
+          onClick={promoteCurrentToAdmin} 
+          disabled={loading}
+          className="btn btn-full btn-secondary"
+        >
+          {loading ? "PROCESSING..." : "PROMOTE MY CURRENT ACCOUNT TO ADMIN"}
         </button>
       </div>
 

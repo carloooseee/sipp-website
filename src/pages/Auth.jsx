@@ -7,7 +7,7 @@ import {
   signInWithPopup,
   GoogleAuthProvider
 } from 'firebase/auth';
-import { doc, setDoc, serverTimestamp, getDoc, collection, addDoc } from 'firebase/firestore';
+import { doc, setDoc, serverTimestamp, getDoc, collection, addDoc, query, where, getDocs } from 'firebase/firestore';
 import loginBg from '../assets/loginsignup.jpg';
 
 export default function Auth() {
@@ -29,15 +29,30 @@ export default function Auth() {
     if (!userDoc.exists()) {
       const firstName = user.displayName?.split(' ')[0] || displayName.split(' ')[0] || '';
       const lastName = user.displayName?.split(' ').slice(1).join(' ') || displayName.split(' ').slice(1).join(' ') || '';
-      
+
+      let role = 'Member';
+      let status = 'Pending';
+      if (user.email) {
+        const existing = await getDocs(
+          query(collection(db, 'members'), where('email', '==', user.email))
+        );
+        const existingAdmin = existing.docs.find(
+          (d) => String(d.data().role ?? '').trim().toLowerCase() === 'admin'
+        );
+        if (existingAdmin) {
+          role = 'Admin';
+          status = existingAdmin.data().status ?? 'Approved';
+        }
+      }
+
       await setDoc(userRef, {
         firstName,
         lastName,
         email: user.email,
         phone: phone || '',
         address: address || '',
-        role: 'Member',
-        status: 'Pending',
+        role,
+        status,
         createdAt: serverTimestamp()
       });
 

@@ -6,7 +6,6 @@ import { onAuthStateChanged, signOut } from 'firebase/auth';
 // Pages
 import HomePage from './pages/HomePage';
 import RegistrationForm from './pages/RegistrationForm';
-import MemberDatabase from './pages/MemberDatabase';
 import AdminDashboard from './pages/AdminDashboard';
 import Announcements from './pages/Announcements';
 import AboutKDBM from './pages/AboutKDBM';
@@ -19,7 +18,61 @@ import SeedDatabase from './pages/SeedDatabase';
 import Background from './pages/Background';
 
 import { db } from './firebase';
-import { doc, getDoc, onSnapshot, query, collection, where } from 'firebase/firestore';
+import { onSnapshot, doc, setDoc, getDocs, query, collection, where } from 'firebase/firestore';
+
+const isAdminRole = (role) => String(role ?? '').trim().toLowerCase() === 'admin';
+
+/**
+ * Loads the member profile from Firestore and mirrors it onto members/{auth.uid}
+ * so the app can read role/status under typical security rules.
+ */
+const syncMemberProfileToUid = async (currentUser, uidSnap) => {
+  const uidRef = doc(db, 'members', currentUser.uid);
+  const uidData = uidSnap?.exists() ? uidSnap.data() : null;
+
+  if (isAdminRole(uidData?.role)) {
+    return { id: currentUser.uid, ...uidData };
+  }
+
+  const email = (currentUser.email || '').trim();
+  if (email) {
+    const emailSnap = await getDocs(
+      query(collection(db, 'members'), where('email', '==', email))
+    );
+    const adminDoc = emailSnap.docs.find((d) => isAdminRole(d.data().role));
+    const primaryDoc = adminDoc ?? emailSnap.docs[0];
+
+    if (adminDoc) {
+      const adminData = adminDoc.data();
+      const merged = {
+        ...adminData,
+        ...uidData,
+        email: currentUser.email,
+        role: 'Admin',
+        status: adminData.status ?? uidData?.status ?? 'Approved',
+      };
+      try {
+        await setDoc(uidRef, merged, { merge: true });
+      } catch (error) {
+        console.error('Could not sync admin profile to members/{uid}:', error);
+      }
+      return { id: currentUser.uid, ...merged };
+    }
+
+    if (!uidSnap?.exists() && primaryDoc) {
+      const data = primaryDoc.data();
+      try {
+        await setDoc(uidRef, { ...data, email: currentUser.email }, { merge: true });
+      } catch (error) {
+        console.error('Could not create member profile at members/{uid}:', error);
+      }
+      return { id: currentUser.uid, ...data };
+    }
+  }
+
+  if (uidData) return { id: currentUser.uid, ...uidData };
+  return null;
+};
 
 const NavLink = ({ to, children }) => {
   const location = useLocation();
@@ -35,10 +88,9 @@ const NavLink = ({ to, children }) => {
 const AuthRedirectHandler = ({ isAdmin }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  
+
   useEffect(() => {
-    // Aggressively redirect Admins away from public landing pages directly to the dashboard
-    if (isAdmin && (location.pathname === '/' || location.pathname === '/register' || location.pathname === '/login')) {
+    if (isAdmin && location.pathname !== '/admin') {
       navigate('/admin', { replace: true });
     }
   }, [isAdmin, location.pathname, navigate]);
@@ -52,35 +104,51 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    let unsubscribeSnapshot = null;
+    let unsubscribeUid = null;
+    let latestUidSnap = null;
+    let profileRequestId = 0;
+
+    const applyProfile = async (currentUser) => {
+      if (!currentUser) return;
+      const requestId = ++profileRequestId;
+      try {
+        const profile = await syncMemberProfileToUid(currentUser, latestUidSnap);
+        if (requestId === profileRequestId) {
+          setUserData(profile);
+        }
+      } catch (error) {
+        console.error('Error syncing member profile:', error);
+        if (requestId === profileRequestId) {
+          const uidData = latestUidSnap?.exists() ? latestUidSnap.data() : null;
+          setUserData(uidData ? { id: currentUser.uid, ...uidData } : null);
+        }
+      }
+      if (requestId === profileRequestId) {
+        setUser(currentUser);
+        setLoading(false);
+      }
+    };
 
     const unsubscribeAuth = onAuthStateChanged(auth, (currentUser) => {
-      setLoading(true);
+      if (unsubscribeUid) unsubscribeUid();
+      unsubscribeUid = null;
+      latestUidSnap = null;
 
       if (currentUser) {
-        // Query by email to be more robust (handles cases where UID doesn't match Doc ID)
-        const q = query(collection(db, "members"), where("email", "==", currentUser.email));
-        
-        unsubscribeSnapshot = onSnapshot(q, (querySnapshot) => {
-          if (!querySnapshot.empty) {
-            // Get the first matching document
-            setUserData(querySnapshot.docs[0].data());
-          } else {
-            setUserData(null);
+        setLoading(true);
+
+        unsubscribeUid = onSnapshot(
+          doc(db, 'members', currentUser.uid),
+          (uidSnap) => {
+            latestUidSnap = uidSnap;
+            applyProfile(currentUser);
+          },
+          (error) => {
+            console.error('Error fetching member by UID:', error);
+            applyProfile(currentUser);
           }
-          setUser(currentUser);
-          setLoading(false);
-        }, (error) => {
-          console.error("Error fetching user data:", error);
-          setUserData(null);
-          setUser(currentUser);
-          setLoading(false);
-        });
-        
+        );
       } else {
-        if (unsubscribeSnapshot) {
-          unsubscribeSnapshot();
-        }
         setUserData(null);
         setUser(null);
         setLoading(false);
@@ -89,7 +157,7 @@ function App() {
 
     return () => {
       unsubscribeAuth();
-      if (unsubscribeSnapshot) unsubscribeSnapshot();
+      if (unsubscribeUid) unsubscribeUid();
     };
   }, []);
 
@@ -109,7 +177,7 @@ function App() {
     return <Auth />;
   }
 
-  const isAdmin = userData?.role?.toLowerCase() === 'admin';
+  const isAdmin = isAdminRole(userData?.role);
 
   return (
     <Router>
@@ -117,17 +185,22 @@ function App() {
       <header className="header">
         <div className="container nav">
           <div className="nav-left">
-            <Link to="/" className="nav-logo">
+            <Link to={isAdmin ? '/admin' : '/'} className="nav-logo">
               {isAdmin ? 'KDBM ADMIN' : 'KDBM'}
             </Link>
             <nav className="nav-links">
-              <NavLink to="/">HOME</NavLink>
-              <NavLink to="/about">ABOUT</NavLink>
-              <NavLink to="/background">BACKGROUND</NavLink>
-              <NavLink to="/projects">PROJECTS</NavLink>
-              <NavLink to="/bulletin">BULLETIN BOARD</NavLink>
-              <NavLink to="/announcements">ANNOUNCEMENTS</NavLink>
-              {isAdmin && <NavLink to="/admin">DASHBOARD</NavLink>}
+              {isAdmin ? (
+                <NavLink to="/admin">DASHBOARD</NavLink>
+              ) : (
+                <>
+                  <NavLink to="/">HOME</NavLink>
+                  <NavLink to="/about">ABOUT</NavLink>
+                  <NavLink to="/background">BACKGROUND</NavLink>
+                  <NavLink to="/projects">PROJECTS</NavLink>
+                  <NavLink to="/bulletin">BULLETIN BOARD</NavLink>
+                  <NavLink to="/announcements">ANNOUNCEMENTS</NavLink>
+                </>
+              )}
             </nav>
           </div>
           <div className="nav-actions">
@@ -139,18 +212,27 @@ function App() {
 
       <main className="container content-wrapper">
         <Routes>
-          <Route path="/" element={isAdmin ? <Navigate to="/admin" replace /> : <HomePage />} />
-          <Route path="/about" element={<AboutKDBM />} />
-          <Route path="/background" element={<Background />} />
-          <Route path="/projects" element={<Projects />} />
-          <Route path="/bulletin" element={<BulletinBoard />} />
-          <Route path="/register" element={<RegistrationForm />} />
-          <Route path="/seed" element={<SeedDatabase />} />
-          <Route path="/admin" element={isAdmin ? <AdminDashboard /> : <Navigate to="/" replace />} />
-          <Route path="/database" element={isAdmin ? <MemberDatabase /> : <Navigate to="/" replace />} />
-          <Route path="/announcements" element={<Announcements />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
+          {isAdmin ? (
+            <>
+              <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="*" element={<Navigate to="/admin" replace />} />
+            </>
+          ) : (
+            <>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/about" element={<AboutKDBM />} />
+              <Route path="/background" element={<Background />} />
+              <Route path="/projects" element={<Projects />} />
+              <Route path="/bulletin" element={<BulletinBoard />} />
+              <Route path="/register" element={<RegistrationForm />} />
+              <Route path="/seed" element={<SeedDatabase />} />
+              <Route path="/admin" element={<Navigate to="/" replace />} />
+              <Route path="/database" element={<Navigate to="/" replace />} />
+              <Route path="/announcements" element={<Announcements />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </>
+          )}
         </Routes>
       </main>
     </Router>
