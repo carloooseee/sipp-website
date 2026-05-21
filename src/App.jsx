@@ -16,6 +16,7 @@ import BulletinBoard from './pages/BulletinBoard';
 import Projects from './pages/Projects';
 import SeedDatabase from './pages/SeedDatabase';
 import Background from './pages/Background';
+import Profile from './pages/Profile';
 
 import { db } from './firebase';
 import { onSnapshot, doc, setDoc, getDocs, query, collection, where } from 'firebase/firestore';
@@ -204,7 +205,9 @@ function App() {
             </nav>
           </div>
           <div className="nav-actions">
-            <span className="user-display">{user.displayName || user.email}</span>
+            <Link to="/profile" className="user-display" title="View Profile" style={{ textDecoration: 'none', cursor: 'pointer' }}>
+              {user.displayName || user.email}
+            </Link>
             <button onClick={handleLogout} className="btn-secondary btn btn-logout">LOGOUT</button>
           </div>
         </div>
@@ -212,6 +215,7 @@ function App() {
 
       <main className="container content-wrapper">
         <Routes>
+          <Route path="/profile" element={<Profile user={user} userData={userData} />} />
           {isAdmin ? (
             <>
               <Route path="/admin" element={<AdminDashboard />} />
