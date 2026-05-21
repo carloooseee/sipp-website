@@ -3,9 +3,7 @@ import { auth, db } from '../firebase';
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
-  updateProfile,
-  signInWithPopup,
-  GoogleAuthProvider
+  updateProfile
 } from 'firebase/auth';
 import { doc, setDoc, serverTimestamp, getDoc, collection, addDoc, query, where, getDocs } from 'firebase/firestore';
 import { ArrowRight, ArrowLeft } from 'lucide-react';
@@ -143,20 +141,6 @@ export default function Auth() {
           familyInformation
         });
       }
-    } catch (err) {
-      console.error(err);
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleGoogleSignIn = async () => {
-    const provider = new GoogleAuthProvider();
-    try {
-      setLoading(true);
-      const result = await signInWithPopup(auth, provider);
-      await saveUserToFirestore(result.user);
     } catch (err) {
       console.error(err);
       setError(err.message);
@@ -536,13 +520,6 @@ export default function Auth() {
               )}
             </form>
 
-            <div style={{ marginTop: '0.5rem' }}>
-              <button onClick={handleGoogleSignIn} className="btn btn-google btn-full" style={{ padding: '0.5rem', marginTop: 0 }} disabled={loading}>
-                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" style={{ width: '16px', height: '16px' }} />
-                Sign up with Google
-              </button>
-            </div>
-
             <div className="auth-mobile-toggle">
               Already have an account? <button type="button" className="btn-link" onClick={() => setIsLogin(true)}>Sign in</button>
             </div>
@@ -569,13 +546,6 @@ export default function Auth() {
                 {loading ? 'Processing...' : 'SIGN IN'}
               </button>
             </form>
-
-            <div>
-              <button onClick={handleGoogleSignIn} className="btn btn-google btn-full" disabled={loading}>
-                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" />
-                Sign in with Google
-              </button>
-            </div>
 
             <div className="auth-mobile-toggle">
               Don't have an account? <button type="button" className="btn-link" onClick={() => setIsLogin(false)}>Sign up</button>
