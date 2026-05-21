@@ -8,6 +8,7 @@ import {
 import { doc, setDoc, serverTimestamp, getDoc, collection, addDoc, query, where, getDocs } from 'firebase/firestore';
 import { ArrowRight, ArrowLeft } from 'lucide-react';
 import loginBg from '../assets/loginsignup.jpg';
+import kdbmLogo from '../assets/kdbm_logo.png';
 
 export default function Auth() {
   const [isLogin, setIsLogin] = useState(false);
@@ -557,11 +558,13 @@ export default function Auth() {
         <div className="auth-overlay-container">
           <div className="auth-overlay" style={{ backgroundImage: `url(${loginBg})` }}>
             <div className="auth-overlay-panel overlay-left">
+              <img src={kdbmLogo} alt="KDBM Logo" style={{ width: '30%', height: 'auto', marginBottom: '1.5rem', borderRadius: '8px', objectFit: 'contain' }} />
               <h1>New here?</h1>
               <p>Join the KDBM community and share your artwork today.</p>
               <button className="btn btn-secondary btn-ghost" onClick={() => setIsLogin(false)}>SIGN UP</button>
             </div>
             <div className="auth-overlay-panel overlay-right">
+              <img src={kdbmLogo} alt="KDBM Logo" style={{ width: '30%', height: 'auto', marginBottom: '1.5rem', borderRadius: '8px', objectFit: 'contain' }} />
               <h1>Already have an account?</h1>
               <p>Keep your business profile up to date by signing in.</p>
               <button className="btn btn-secondary btn-ghost" onClick={() => setIsLogin(true)}>SIGN IN</button>

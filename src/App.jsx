@@ -17,6 +17,7 @@ import Projects from './pages/Projects';
 import SeedDatabase from './pages/SeedDatabase';
 import Background from './pages/Background';
 import Profile from './pages/Profile';
+import kdbmLogo from './assets/kdbm_logo.png';
 
 import { db } from './firebase';
 import { onSnapshot, doc, setDoc, getDocs, query, collection, where } from 'firebase/firestore';
@@ -186,8 +187,9 @@ function App() {
       <header className="header">
         <div className="container nav">
           <div className="nav-left">
-            <Link to={isAdmin ? '/admin' : '/'} className="nav-logo">
-              {isAdmin ? 'KDBM ADMIN' : 'KDBM'}
+            <Link to={isAdmin ? '/admin' : '/'} className="nav-logo" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <img src={kdbmLogo} alt="KDBM Logo" style={{ height: '32px', width: 'auto', objectFit: 'contain' }} />
+              <span>{isAdmin ? 'KDBM ADMIN' : 'KDBM'}</span>
             </Link>
             <nav className="nav-links">
               {isAdmin ? (
