@@ -22,6 +22,11 @@
   box-sizing: border-box;
 }
 
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+}
+
 body {
   font-family: 'Inter', sans-serif;
   background-color: var(--bg);
@@ -38,6 +43,16 @@ body {
 .content-wrapper {
   padding-top: 2.5rem;
   padding-bottom: 2.5rem;
+}
+
+.hero-full-width {
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  width: 100vw;
+  margin-top: -3.5rem;
 }
 
 /* Professional Card Styling */

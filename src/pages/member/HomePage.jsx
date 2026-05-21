@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Megaphone, ArrowRight, ShieldCheck, TrendingUp, X, MapPin, Clock, User, Mail, Calendar } from 'lucide-react';
 import { db } from '../../firebase';
 import { collection, getDocs, limit, orderBy, query } from 'firebase/firestore';
+import kdbmOverviewImg from '../../assets/pictures/kdbm_overview.jpg';
 
 export default function HomePage() {
   const [latestAnnouncements, setLatestAnnouncements] = useState([]);
@@ -38,9 +39,23 @@ export default function HomePage() {
   return (
     <div className="animate-fade-in">
       {/* Hero / Overview Section */}
-      <section style={{ marginBottom: '4rem', textAlign: 'center', padding: '4rem 2rem', backgroundColor: 'var(--primary)', color: 'white', borderRadius: '8px' }}>
-        <h1 style={{ fontSize: '3.5rem', fontWeight: '900', marginBottom: '1rem', letterSpacing: '-0.05em' }}>KDBM Overview</h1>
-        <p style={{ fontSize: '1.25rem', maxWidth: '700px', margin: '0 auto', opacity: '0.9', lineHeight: '1.6' }}>
+      <section 
+        className="hero-full-width" 
+        style={{ 
+          marginBottom: '4rem', 
+          textAlign: 'center', 
+          padding: '6rem 2rem', 
+          backgroundImage: `linear-gradient(135deg, rgba(194, 65, 12, 0.85), rgba(194, 65, 12, 0.65)), url(${kdbmOverviewImg})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          color: 'white'
+        }}
+      >
+        <h1 style={{ fontSize: '3.5rem', fontWeight: '900', marginBottom: '1rem', letterSpacing: '-0.05em', textShadow: '0 2px 8px rgba(0, 0, 0, 0.4)' }}>
+          KDBM Overview
+        </h1>
+        <p style={{ fontSize: '1.25rem', maxWidth: '700px', margin: '0 auto', opacity: '0.95', lineHeight: '1.6', textShadow: '0 1px 4px rgba(0, 0, 0, 0.4)' }}>
           The KDBM Professional Network is dedicated to fostering growth, collaboration, and professional excellence among our local community members.
         </p>
       </section>
