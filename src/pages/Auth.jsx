@@ -195,7 +195,7 @@ export default function Auth() {
                       fontSize: '0.75rem',
                       border: '2px solid',
                       borderColor: signupStep >= 1 ? 'var(--primary)' : 'var(--border)',
-                      boxShadow: signupStep === 1 ? '0 0 0 3px rgba(0, 31, 63, 0.15)' : 'none',
+                      boxShadow: signupStep === 1 ? '0 0 0 3px rgba(194, 24, 21, 0.15)' : 'none',
                       transition: 'all 0.3s ease',
                       cursor: 'pointer'
                     }}
@@ -245,7 +245,7 @@ export default function Auth() {
                       fontSize: '0.75rem',
                       border: '2px solid',
                       borderColor: signupStep === 2 ? 'var(--primary)' : 'var(--border)',
-                      boxShadow: signupStep === 2 ? '0 0 0 3px rgba(0, 31, 63, 0.15)' : 'none',
+                      boxShadow: signupStep === 2 ? '0 0 0 3px rgba(194, 24, 21, 0.15)' : 'none',
                       transition: 'all 0.3s ease',
                       cursor: 'pointer'
                     }}
@@ -333,7 +333,7 @@ export default function Auth() {
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      boxShadow: '0 4px 10px rgba(0, 31, 63, 0.2)',
+                      boxShadow: '0 4px 10px rgba(194, 24, 21, 0.2)',
                       marginBottom: '4px',
                       transition: 'all 0.2s ease'
                     }}>

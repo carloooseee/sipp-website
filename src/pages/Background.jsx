@@ -29,14 +29,14 @@ export default function Background() {
 
       <div className="grid">
         <div className="card" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
-          <div style={{ padding: '1rem', backgroundColor: '#F0F7FF', borderRadius: '50%', marginBottom: '1rem' }}>
+          <div style={{ padding: '1rem', backgroundColor: '#FFF7ED', borderRadius: '50%', marginBottom: '1rem' }}>
             <History size={32} color="var(--primary)" />
           </div>
           <h3 style={{ fontWeight: '800', marginBottom: '0.5rem' }}>Established</h3>
           <p style={{ fontSize: '0.9rem', color: '#666' }}>Over a decade of service to the local professional community.</p>
         </div>
         <div className="card" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
-          <div style={{ padding: '1rem', backgroundColor: '#F0F7FF', borderRadius: '50%', marginBottom: '1rem' }}>
+          <div style={{ padding: '1rem', backgroundColor: '#FFF7ED', borderRadius: '50%', marginBottom: '1rem' }}>
             <BookOpen size={32} color="var(--primary)" />
           </div>
           <h3 style={{ fontWeight: '800', marginBottom: '0.5rem' }}>Core Values</h3>

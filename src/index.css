@@ -2,13 +2,15 @@
 
 :root {
   --bg: #FFFFFF;
-  --text: #333333;
-  --primary: #001F3F;
-  /* Deep Navy Blue */
-  --secondary: #F5F5F5;
-  /* Soft Gray */
+  --text: #1F2937;
+  --primary: #c21815; /* Crimson brand red shade of #ee100d */
+  --primary-rgb: 194, 24, 21;
+  --primary-hover: #a30f0d;
+  --accent-orange: #c2410c;
+  --accent-orange-rgb: 194, 65, 12;
+  --accent-gold: #e3d415;
+  --secondary: #F9FAFB;
   --border: #E5E7EB;
-  /* Light gray border */
   --error: #EF4444;
   --white: #FFFFFF;
 }
@@ -300,7 +302,7 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(rgba(0, 31, 63, 0.8), rgba(0, 31, 63, 0.95));
+  background: linear-gradient(135deg, rgba(var(--primary-rgb), 0.85), rgba(var(--accent-orange-rgb), 0.95));
 }
 
 .auth-container-v2.is-login .auth-overlay {
@@ -559,8 +561,8 @@ body {
 
 .step-nav-btn:hover .next-arrow-circle {
   transform: scale(1.1);
-  background-color: var(--primary-hover, #002d5c);
-  box-shadow: 0 6px 15px rgba(0, 31, 63, 0.3) !important;
+  background-color: var(--primary-hover);
+  box-shadow: 0 6px 15px rgba(194, 24, 21, 0.3) !important;
 }
 
 .step-nav-btn:hover .back-arrow-circle {

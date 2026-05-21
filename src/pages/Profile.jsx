@@ -152,7 +152,7 @@ export default function Profile({ user, userData }) {
           justifyContent: 'center',
           fontSize: '2rem',
           fontWeight: 'bold',
-          boxShadow: '0 4px 15px rgba(0, 31, 63, 0.25)',
+          boxShadow: '0 4px 15px rgba(194, 24, 21, 0.25)',
           border: '3px solid white',
           outline: '1px solid var(--border)'
         }}>
@@ -169,9 +169,9 @@ export default function Profile({ user, userData }) {
               borderRadius: '999px',
               fontSize: '0.75rem',
               fontWeight: '700',
-              backgroundColor: userData.role === 'Admin' ? '#FEF3C7' : '#EFF6FF',
-              color: userData.role === 'Admin' ? '#92400E' : '#1E40AF',
-              border: `1px solid ${userData.role === 'Admin' ? '#FDE68A' : '#BFDBFE'}`,
+              backgroundColor: userData.role === 'Admin' ? '#FEF3C7' : '#FFEDD5',
+              color: userData.role === 'Admin' ? '#92400E' : '#C2410C',
+              border: `1px solid ${userData.role === 'Admin' ? '#FDE68A' : '#FED7AA'}`,
               display: 'inline-flex',
               alignItems: 'center',
               gap: '0.25rem'
