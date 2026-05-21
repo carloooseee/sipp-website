@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { db } from '../../firebase';
 import { collection, addDoc, getDocs, deleteDoc, doc, query, orderBy } from 'firebase/firestore';
-import { Megaphone, Calendar, Trash2, Plus, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { Megaphone, Calendar, Trash2, Plus, AlertCircle, CheckCircle2, MapPin, Clock, User, Mail } from 'lucide-react';
 
 export default function AdminAnnouncements() {
   const [announcements, setAnnouncements] = useState([]);
@@ -14,7 +14,12 @@ export default function AdminAnnouncements() {
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('News');
   const [date, setDate] = useState(new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }));
+  const [summary, setSummary] = useState('');
   const [content, setContent] = useState('');
+  const [venue, setVenue] = useState('');
+  const [time, setTime] = useState('');
+  const [contactPerson, setContactPerson] = useState('');
+  const [contactEmail, setContactEmail] = useState('');
 
   const fetchAnnouncements = async () => {
     setLoading(true);
@@ -42,8 +47,8 @@ export default function AdminAnnouncements() {
     setSuccess('');
     setSubmitLoading(true);
 
-    if (!title.trim() || !content.trim()) {
-      setError('Title and content are required.');
+    if (!title.trim() || !content.trim() || !summary.trim()) {
+      setError('Title, summary, and content are required.');
       setSubmitLoading(false);
       return;
     }
@@ -53,14 +58,25 @@ export default function AdminAnnouncements() {
         title: title.trim(),
         category,
         date: date.trim(),
+        summary: summary.trim(),
         content: content.trim(),
+        venue: venue.trim(),
+        time: time.trim(),
+        contactPerson: contactPerson.trim(),
+        contactEmail: contactEmail.trim(),
         createdAt: new Date()
       });
 
       setSuccess('Announcement added successfully!');
       setTitle('');
-      setContent('');
+      setCategory('News');
       setDate(new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }));
+      setSummary('');
+      setContent('');
+      setVenue('');
+      setTime('');
+      setContactPerson('');
+      setContactEmail('');
       fetchAnnouncements();
     } catch (err) {
       console.error('Error adding announcement:', err);
@@ -123,6 +139,7 @@ export default function AdminAnnouncements() {
                   <option value="News">News</option>
                   <option value="Event">Event</option>
                   <option value="Project">Project</option>
+                  <option value="Alert">Alert</option>
                 </select>
               </div>
               <div className="form-group" style={{ marginBottom: 0 }}>
@@ -132,8 +149,39 @@ export default function AdminAnnouncements() {
             </div>
 
             <div className="form-group" style={{ marginBottom: 0 }}>
-              <label className="form-label">Content</label>
+              <label className="form-label">Brief Summary (For Card Preview)</label>
+              <input type="text" className="form-control" placeholder="Short teaser/intro sentence" value={summary} onChange={(e) => setSummary(e.target.value)} required />
+            </div>
+
+            <div className="form-group" style={{ marginBottom: 0 }}>
+              <label className="form-label">Detailed Content</label>
               <textarea className="form-control" style={{ minHeight: '120px', resize: 'vertical' }} value={content} onChange={(e) => setContent(e.target.value)} required />
+            </div>
+
+            <h3 style={{ fontSize: '0.9rem', fontWeight: '700', color: '#666', borderBottom: '1px dashed var(--border)', paddingBottom: '0.25rem', marginTop: '0.5rem', marginBottom: '0.25rem' }}>
+              Event / Contact Info (Optional)
+            </h3>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              <div className="form-group" style={{ marginBottom: 0 }}>
+                <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}><MapPin size={12} /> Venue</label>
+                <input type="text" className="form-control" placeholder="e.g. Conference Room A" value={venue} onChange={(e) => setVenue(e.target.value)} />
+              </div>
+              <div className="form-group" style={{ marginBottom: 0 }}>
+                <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}><Clock size={12} /> Time</label>
+                <input type="text" className="form-control" placeholder="e.g. 2:00 PM - 5:00 PM" value={time} onChange={(e) => setTime(e.target.value)} />
+              </div>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              <div className="form-group" style={{ marginBottom: 0 }}>
+                <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}><User size={12} /> Contact Person</label>
+                <input type="text" className="form-control" placeholder="e.g. Jane Doe" value={contactPerson} onChange={(e) => setContactPerson(e.target.value)} />
+              </div>
+              <div className="form-group" style={{ marginBottom: 0 }}>
+                <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}><Mail size={12} /> Contact Email</label>
+                <input type="email" className="form-control" placeholder="e.g. jane@example.com" value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} />
+              </div>
             </div>
 
             <button type="submit" className="btn" disabled={submitLoading} style={{ marginTop: '0.5rem' }}>
@@ -165,8 +213,35 @@ export default function AdminAnnouncements() {
                         <Calendar size={12} /> {ann.date}
                       </span>
                     </div>
-                    <h3 style={{ fontSize: '1.1rem', fontWeight: '700', marginBottom: '0.5rem' }}>{ann.title}</h3>
-                    <p style={{ fontSize: '0.85rem', color: '#555', lineHeight: '1.5', whiteSpace: 'pre-wrap' }}>{ann.content}</p>
+                    <h3 style={{ fontSize: '1.1rem', fontWeight: '700', marginBottom: '0.25rem' }}>{ann.title}</h3>
+                    <p style={{ fontSize: '0.85rem', color: '#666', fontWeight: '600', marginBottom: '0.5rem' }}>{ann.summary}</p>
+                    <p style={{ fontSize: '0.85rem', color: '#888', lineHeight: '1.5', whiteSpace: 'pre-wrap', marginBottom: '0.75rem' }}>{ann.content}</p>
+                    
+                    {/* Optional metadata preview */}
+                    {(ann.venue || ann.time || ann.contactPerson || ann.contactEmail) && (
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem 0.75rem', marginTop: '0.5rem', padding: '0.5rem', backgroundColor: '#fcfcfc', borderRadius: '4px', border: '1px solid var(--border)' }}>
+                        {ann.venue && (
+                          <span style={{ fontSize: '0.75rem', color: '#555', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                            <MapPin size={12} color="var(--primary)" /> <strong>Venue:</strong> {ann.venue}
+                          </span>
+                        )}
+                        {ann.time && (
+                          <span style={{ fontSize: '0.75rem', color: '#555', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                            <Clock size={12} color="var(--primary)" /> <strong>Time:</strong> {ann.time}
+                          </span>
+                        )}
+                        {ann.contactPerson && (
+                          <span style={{ fontSize: '0.75rem', color: '#555', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                            <User size={12} color="var(--primary)" /> <strong>Contact:</strong> {ann.contactPerson}
+                          </span>
+                        )}
+                        {ann.contactEmail && (
+                          <span style={{ fontSize: '0.75rem', color: '#555', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                            <Mail size={12} color="var(--primary)" /> {ann.contactEmail}
+                          </span>
+                        )}
+                      </div>
+                    )}
                   </div>
                   <button onClick={() => handleDelete(ann.id)} className="btn btn-secondary" style={{ padding: '0.5rem', borderColor: 'var(--border)', color: 'var(--error)' }} title="Delete Announcement">
                     <Trash2 size={16} />

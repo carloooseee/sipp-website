@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { db } from '../../firebase';
 import { collection, addDoc, getDocs, deleteDoc, doc, query, orderBy } from 'firebase/firestore';
-import { Briefcase, Calendar, Trash2, Plus, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { Briefcase, Calendar, Trash2, Plus, AlertCircle, CheckCircle2, User, Coins, Activity } from 'lucide-react';
 
 export default function AdminProjects() {
   const [projects, setProjects] = useState([]);
@@ -14,7 +14,11 @@ export default function AdminProjects() {
   const [title, setTitle] = useState('');
   const [type, setType] = useState('Upcoming');
   const [date, setDate] = useState('');
+  const [shortDescription, setShortDescription] = useState('');
   const [description, setDescription] = useState('');
+  const [projectLead, setProjectLead] = useState('');
+  const [status, setStatus] = useState('Planning');
+  const [budget, setBudget] = useState('');
 
   const fetchProjects = async () => {
     setLoading(true);
@@ -42,8 +46,8 @@ export default function AdminProjects() {
     setSuccess('');
     setSubmitLoading(true);
 
-    if (!title.trim() || !description.trim() || !date.trim()) {
-      setError('All fields are required.');
+    if (!title.trim() || !description.trim() || !date.trim() || !shortDescription.trim() || !projectLead.trim()) {
+      setError('Title, timeline, short description, description, and project lead are required.');
       setSubmitLoading(false);
       return;
     }
@@ -53,14 +57,23 @@ export default function AdminProjects() {
         title: title.trim(),
         type,
         date: date.trim(),
+        shortDescription: shortDescription.trim(),
         description: description.trim(),
+        projectLead: projectLead.trim(),
+        status,
+        budget: budget.trim(),
         createdAt: new Date()
       });
 
       setSuccess('Project added successfully!');
       setTitle('');
-      setDescription('');
+      setType('Upcoming');
       setDate('');
+      setShortDescription('');
+      setDescription('');
+      setProjectLead('');
+      setStatus('Planning');
+      setBudget('');
       fetchProjects();
     } catch (err) {
       console.error('Error adding project:', err);
@@ -130,8 +143,34 @@ export default function AdminProjects() {
               </div>
             </div>
 
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              <div className="form-group" style={{ marginBottom: 0 }}>
+                <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}><User size={12} /> Project Lead</label>
+                <input type="text" className="form-control" placeholder="e.g. Jane Doe" value={projectLead} onChange={(e) => setProjectLead(e.target.value)} required />
+              </div>
+              <div className="form-group" style={{ marginBottom: 0 }}>
+                <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}><Activity size={12} /> Status</label>
+                <select className="form-control" value={status} onChange={(e) => setStatus(e.target.value)}>
+                  <option value="Planning">Planning</option>
+                  <option value="In Progress">In Progress</option>
+                  <option value="Completed">Completed</option>
+                  <option value="Delayed">Delayed</option>
+                </select>
+              </div>
+            </div>
+
             <div className="form-group" style={{ marginBottom: 0 }}>
-              <label className="form-label">Description</label>
+              <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}><Coins size={12} /> Budget (Optional)</label>
+              <input type="text" className="form-control" placeholder="e.g. $10,000 or Community Funded" value={budget} onChange={(e) => setBudget(e.target.value)} />
+            </div>
+
+            <div className="form-group" style={{ marginBottom: 0 }}>
+              <label className="form-label">Short Description (For Card Preview)</label>
+              <input type="text" className="form-control" placeholder="Short teaser summary" value={shortDescription} onChange={(e) => setShortDescription(e.target.value)} required />
+            </div>
+
+            <div className="form-group" style={{ marginBottom: 0 }}>
+              <label className="form-label">Detailed Description</label>
               <textarea className="form-control" style={{ minHeight: '120px', resize: 'vertical' }} value={description} onChange={(e) => setDescription(e.target.value)} required />
             </div>
 
@@ -156,7 +195,7 @@ export default function AdminProjects() {
               {projects.map((proj, idx) => (
                 <div key={proj.id} style={{ padding: '1.5rem', borderBottom: idx !== projects.length - 1 ? '1px solid var(--border)' : 'none', display: 'flex', justifyContent: 'space-between', gap: '1rem', alignItems: 'flex-start' }}>
                   <div style={{ flex: 1 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
                       <span style={{ 
                         padding: '0.2rem 0.6rem', 
                         backgroundColor: proj.type === 'Past' ? '#E2E8F0' : '#C6F6D5',
@@ -168,12 +207,42 @@ export default function AdminProjects() {
                       }}>
                         {proj.type}
                       </span>
+                      <span style={{ 
+                        padding: '0.2rem 0.6rem', 
+                        backgroundColor: 
+                          proj.status === 'Completed' ? '#D1FAE5' :
+                          proj.status === 'In Progress' ? '#DBEAFE' :
+                          proj.status === 'Delayed' ? '#FEE2E2' : '#FEF3C7',
+                        color: 
+                          proj.status === 'Completed' ? '#065F46' :
+                          proj.status === 'In Progress' ? '#1E40AF' :
+                          proj.status === 'Delayed' ? '#991B1B' : '#92400E',
+                        borderRadius: '999px',
+                        fontSize: '0.7rem', 
+                        fontWeight: 'bold', 
+                        textTransform: 'uppercase' 
+                      }}>
+                        {proj.status || 'Planning'}
+                      </span>
                       <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: '#888', fontSize: '0.75rem' }}>
                         <Calendar size={12} /> {proj.date}
                       </span>
                     </div>
-                    <h3 style={{ fontSize: '1.1rem', fontWeight: '700', marginBottom: '0.5rem' }}>{proj.title}</h3>
-                    <p style={{ fontSize: '0.85rem', color: '#555', lineHeight: '1.5', whiteSpace: 'pre-wrap' }}>{proj.description}</p>
+                    <h3 style={{ fontSize: '1.1rem', fontWeight: '700', marginBottom: '0.25rem' }}>{proj.title}</h3>
+                    <p style={{ fontSize: '0.85rem', color: '#666', fontWeight: '600', marginBottom: '0.5rem' }}>{proj.shortDescription}</p>
+                    <p style={{ fontSize: '0.85rem', color: '#888', lineHeight: '1.5', whiteSpace: 'pre-wrap', marginBottom: '0.75rem' }}>{proj.description}</p>
+                    
+                    {/* Optional metadata preview */}
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem 0.75rem', marginTop: '0.5rem', padding: '0.5rem', backgroundColor: '#fcfcfc', borderRadius: '4px', border: '1px solid var(--border)' }}>
+                      <span style={{ fontSize: '0.75rem', color: '#555', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                        <User size={12} color="var(--primary)" /> <strong>Lead:</strong> {proj.projectLead || 'N/A'}
+                      </span>
+                      {proj.budget && (
+                        <span style={{ fontSize: '0.75rem', color: '#555', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                          <Coins size={12} color="var(--primary)" /> <strong>Budget:</strong> {proj.budget}
+                        </span>
+                      )}
+                    </div>
                   </div>
                   <button onClick={() => handleDelete(proj.id)} className="btn btn-secondary" style={{ padding: '0.5rem', borderColor: 'var(--border)', color: 'var(--error)' }} title="Delete Project">
                     <Trash2 size={16} />
