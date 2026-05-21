@@ -1,30 +1,51 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Megaphone, Calendar, ArrowRight } from 'lucide-react';
+import { db } from '../firebase';
+import { collection, getDocs, orderBy, query } from 'firebase/firestore';
 
 export default function Announcements() {
-  const announcements = [
+  const [announcements, setAnnouncements] = useState([
     {
-      id: 1,
+      id: 'default-1',
       title: "KDBM General Assembly 2024",
       date: "May 15, 2024",
       category: "Event",
       content: "Join us for our annual general assembly where we discuss future projects and community initiatives. All members are encouraged to attend."
     },
     {
-      id: 2,
+      id: 'default-2',
       title: "New Member Registration Open",
       date: "April 20, 2024",
       category: "News",
       content: "We are officially opening our digital registration system. New members can now join the KDBM network and promote their businesses online."
     },
     {
-      id: 3,
+      id: 'default-3',
       title: "Community Outreach Program",
       date: "April 10, 2024",
       category: "Project",
       content: "KDBM is launching a new outreach program to support local art and culture. Stay tuned for volunteer opportunities."
     }
-  ];
+  ]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchAnnouncements = async () => {
+      try {
+        const q = query(collection(db, 'announcements'), orderBy('createdAt', 'desc'));
+        const snapshot = await getDocs(q);
+        if (!snapshot.empty) {
+          const fetched = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+          setAnnouncements(fetched);
+        }
+      } catch (err) {
+        console.error('Error fetching announcements:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAnnouncements();
+  }, []);
 
   return (
     <div className="animate-fade-in">

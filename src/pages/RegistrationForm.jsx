@@ -1,34 +1,50 @@
-import React, { useState } from 'react';
-import { db, auth } from '../firebase';
-import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
+import React, { useState, useEffect } from 'react';
+import { db } from '../firebase';
+import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, ArrowLeft, CheckCircle } from 'lucide-react';
+import { CheckCircle, Briefcase, Tag, FileText, User } from 'lucide-react';
 
-export default function RegistrationForm() {
+export default function RegistrationForm({ user, userData }) {
   const navigate = useNavigate();
-  const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    address: '',
     businessName: '',
     businessType: '',
     businessDescription: ''
   });
   
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const loadExistingListing = async () => {
+      if (user?.email) {
+        try {
+          const snap = await getDoc(doc(db, 'bulletinBoard', user.email));
+          if (snap.exists()) {
+            const data = snap.data();
+            setFormData({
+              businessName: data.businessName || '',
+              businessType: data.businessType || '',
+              businessDescription: data.businessDescription || ''
+            });
+          }
+        } catch (err) {
+          console.error("Error loading business listing:", err);
+        } finally {
+          setLoading(false);
+        }
+      } else {
+        setLoading(false);
+      }
+    };
+    loadExistingListing();
+  }, [user]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
-
-  const nextStep = () => setStep(prev => prev + 1);
-  const prevStep = () => setStep(prev => prev - 1);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -36,17 +52,22 @@ export default function RegistrationForm() {
     setError(null);
 
     try {
-      if (!auth.currentUser) {
+      if (!user) {
         throw new Error("You must be logged in to register.");
       }
-      const userRef = doc(db, "members", auth.currentUser.uid);
-      await updateDoc(userRef, {
-        ...formData,
-        status: 'Pending',
-        updatedAt: serverTimestamp()
+
+      const bizRef = doc(db, "bulletinBoard", user.email);
+      await setDoc(bizRef, {
+        email: user.email,
+        ownerId: user.uid,
+        businessName: formData.businessName,
+        businessType: formData.businessType,
+        businessDescription: formData.businessDescription,
+        createdAt: serverTimestamp()
       });
+
       setSuccess(true);
-      setTimeout(() => navigate('/directory'), 3000);
+      setTimeout(() => navigate('/bulletin'), 2000);
     } catch (e) {
       console.error("Error adding document: ", e);
       setError("Failed to register. Please check your connection.");
@@ -54,108 +75,121 @@ export default function RegistrationForm() {
     }
   };
 
+  if (loading && !success) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', fontFamily: 'Inter, sans-serif', color: 'var(--primary)', fontWeight: '600' }}>
+        Loading business registration...
+      </div>
+    );
+  }
+
   if (success) {
     return (
-      <div className="card" style={{ textAlign: 'center', padding: '4rem' }}>
+      <div className="card animate-fade-in" style={{ textAlign: 'center', padding: '4rem', maxWidth: '600px', margin: '3rem auto' }}>
         <CheckCircle size={64} color="var(--primary)" style={{ marginBottom: '1.5rem' }} />
         <h2 className="page-title">Registration Complete</h2>
-        <p className="page-subtitle">Your member details have been saved securely. Redirecting to the directory...</p>
+        <p className="page-subtitle">Your business has been successfully registered on the Bulletin Board. Redirecting...</p>
       </div>
     );
   }
 
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-      <div className="steps-container">
-        <div className={`step-item ${step >= 1 ? 'active' : ''}`}>1. IDENTITY</div>
-        <div className={`step-item ${step >= 2 ? 'active' : ''}`}>2. CONTACT</div>
-        <div className={`step-item ${step >= 3 ? 'active' : ''}`}>3. BUSINESS</div>
+    <div style={{ maxWidth: '650px', margin: '2rem auto' }} className="animate-fade-in">
+      <div style={{ marginBottom: '2rem', textAlign: 'center' }}>
+        <h1 className="page-title" style={{ fontSize: '2.25rem', marginBottom: '0.5rem' }}>Register Your Business</h1>
+        <p className="page-subtitle">Promote your business and services in the KDBM Professional Network.</p>
       </div>
 
-      <div className="card">
-        <h2 className="page-title" style={{ fontSize: '1.75rem', marginBottom: '2rem' }}>
-          {step === 1 && "Personal Identity"}
-          {step === 2 && "Contact Details"}
-          {step === 3 && "Business Information"}
-        </h2>
+      <div className="card" style={{ padding: '2.5rem' }}>
+        {error && <div className="auth-error" style={{ marginBottom: '1.5rem', borderRadius: '4px' }}>{error}</div>}
 
-        {error && <div style={{ color: 'var(--error)', marginBottom: '1.5rem', fontWeight: 'bold' }}>{error}</div>}
-
-        <form onSubmit={handleSubmit}>
-          {step === 1 && (
-            <div className="animate-fade-in">
-              <div className="form-group">
-                <label className="form-label">First Name</label>
-                <input type="text" name="firstName" required value={formData.firstName} onChange={handleChange} className="form-control" />
-              </div>
-              <div className="form-group">
-                <label className="form-label">Last Name</label>
-                <input type="text" name="lastName" required value={formData.lastName} onChange={handleChange} className="form-control" />
-              </div>
-              <div style={{ marginTop: '2rem', textAlign: 'right' }}>
-                <button type="button" onClick={nextStep} className="btn">
-                  NEXT <ArrowRight size={18} style={{ marginLeft: '0.5rem' }} />
-                </button>
-              </div>
+        {/* Read-only Owner Information */}
+        <div style={{ 
+          backgroundColor: '#FFFBEB', 
+          border: '1px solid #FDE68A', 
+          padding: '1.25rem', 
+          borderRadius: '6px', 
+          marginBottom: '2rem',
+          display: 'flex',
+          gap: '1rem',
+          alignItems: 'flex-start'
+        }}>
+          <div style={{ padding: '0.5rem', backgroundColor: '#FEF3C7', borderRadius: '4px', color: '#D97706' }}>
+            <User size={20} />
+          </div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: '0.8rem', color: '#B45309', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.25rem' }}>
+              Listing Owner Details
             </div>
-          )}
-
-          {step === 2 && (
-            <div className="animate-fade-in">
-              <div className="form-group">
-                <label className="form-label">Email Address</label>
-                <input type="email" name="email" required value={formData.email} onChange={handleChange} className="form-control" />
-              </div>
-              <div className="form-group">
-                <label className="form-label">Phone Number</label>
-                <input type="tel" name="phone" required value={formData.phone} onChange={handleChange} className="form-control" />
-              </div>
-              <div className="form-group">
-                <label className="form-label">Complete Address</label>
-                <textarea name="address" required value={formData.address} onChange={handleChange} className="form-control" rows="2" style={{ resize: 'vertical' }} />
-              </div>
-              <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'space-between' }}>
-                <button type="button" onClick={prevStep} className="btn btn-secondary">
-                  <ArrowLeft size={18} style={{ marginRight: '0.5rem' }} /> BACK
-                </button>
-                <button type="button" onClick={nextStep} className="btn">
-                  NEXT <ArrowRight size={18} style={{ marginLeft: '0.5rem' }} />
-                </button>
-              </div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.5rem', fontSize: '0.95rem', color: '#78350F' }}>
+              <div><strong>Email:</strong> {user?.email || userData?.email || ''}</div>
             </div>
-          )}
-
-          {step === 3 && (
-            <div className="animate-fade-in">
-              <div className="form-group">
-                <label className="form-label">Business Name</label>
-                <input type="text" name="businessName" required value={formData.businessName} onChange={handleChange} className="form-control" />
-              </div>
-              <div className="form-group">
-                <label className="form-label">Business Type</label>
-                <input type="text" name="businessType" required value={formData.businessType} onChange={handleChange} className="form-control" />
-              </div>
-              <div className="form-group">
-                <label className="form-label">Short Description</label>
-                <textarea 
-                  name="businessDescription" 
-                  rows="4" 
-                  value={formData.businessDescription} 
-                  onChange={handleChange} 
-                  className="form-control" 
-                  style={{ resize: 'none' }}
-                />
-              </div>
-              <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'space-between' }}>
-                <button type="button" onClick={prevStep} className="btn btn-secondary">
-                  <ArrowLeft size={18} style={{ marginRight: '0.5rem' }} /> BACK
-                </button>
-                <button type="submit" disabled={loading} className="btn">
-                  {loading ? 'Processing...' : 'FINISH REGISTRATION'}
-                </button>
-              </div>
+            <div style={{ fontSize: '0.8rem', color: '#D97706', marginTop: '0.5rem' }}>
+              * These details are automatically linked from your member account.
             </div>
-          )}
+          </div>
+        </div>
+
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+          <div className="form-group">
+            <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <Briefcase size={16} color="var(--primary)" /> Business Name
+            </label>
+            <input 
+              type="text" 
+              name="businessName" 
+              required 
+              value={formData.businessName} 
+              onChange={handleChange} 
+              className="form-control" 
+              placeholder="e.g. Acme Consulting Services"
+            />
+          </div>
+
+          <div className="form-group">
+            <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <Tag size={16} color="var(--primary)" /> Business Category / Type
+            </label>
+            <input 
+              type="text" 
+              name="businessType" 
+              required 
+              value={formData.businessType} 
+              onChange={handleChange} 
+              className="form-control" 
+              placeholder="e.g. Consulting, IT Support, Retail, Food Service"
+            />
+          </div>
+
+          <div className="form-group">
+            <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <FileText size={16} color="var(--primary)" /> Business Description
+            </label>
+            <textarea 
+              name="businessDescription" 
+              rows="5" 
+              value={formData.businessDescription} 
+              onChange={handleChange} 
+              className="form-control" 
+              style={{ resize: 'vertical' }}
+              placeholder="Provide a short description of the products, services, or solutions your business offers..."
+            />
+          </div>
+
+          <button 
+            type="submit" 
+            disabled={loading} 
+            className="btn" 
+            style={{ 
+              marginTop: '1rem', 
+              padding: '0.85rem', 
+              fontWeight: 'bold', 
+              fontSize: '1rem',
+              letterSpacing: '0.05em'
+            }}
+          >
+            {loading ? 'Processing Registration...' : 'SUBMIT DIRECTORY LISTING'}
+          </button>
         </form>
       </div>
     </div>

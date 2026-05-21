@@ -18,6 +18,10 @@ import SeedDatabase from './pages/SeedDatabase';
 import Background from './pages/Background';
 import Profile from './pages/Profile';
 import kdbmLogo from './assets/kdbm_logo.png';
+import AdminAnnouncements from './pages/AdminAnnouncements';
+import AdminProjects from './pages/AdminProjects';
+import AdminPageContent from './pages/AdminPageContent';
+import AdminBulletinBoard from './pages/AdminBulletinBoard';
 
 import { db } from './firebase';
 import { onSnapshot, doc, setDoc, getDocs, query, collection, where } from 'firebase/firestore';
@@ -92,8 +96,11 @@ const AuthRedirectHandler = ({ isAdmin }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isAdmin && location.pathname !== '/admin') {
-      navigate('/admin', { replace: true });
+    if (isAdmin) {
+      const isAllowedAdminPath = location.pathname.startsWith('/admin') || location.pathname === '/profile';
+      if (!isAllowedAdminPath) {
+        navigate('/admin', { replace: true });
+      }
     }
   }, [isAdmin, location.pathname, navigate]);
 
@@ -193,7 +200,13 @@ function App() {
             </Link>
             <nav className="nav-links">
               {isAdmin ? (
-                <NavLink to="/admin">DASHBOARD</NavLink>
+                <>
+                  <NavLink to="/admin">MEMBERS</NavLink>
+                  <NavLink to="/admin/bulletin">BULLETIN BOARD</NavLink>
+                  <NavLink to="/admin/projects">PROJECTS</NavLink>
+                  <NavLink to="/admin/announcements">ANNOUNCEMENTS</NavLink>
+                  <NavLink to="/admin/page-content">PAGE CONTENT</NavLink>
+                </>
               ) : (
                 <>
                   <NavLink to="/">HOME</NavLink>
@@ -221,6 +234,10 @@ function App() {
           {isAdmin ? (
             <>
               <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/admin/bulletin" element={<AdminBulletinBoard />} />
+              <Route path="/admin/projects" element={<AdminProjects />} />
+              <Route path="/admin/announcements" element={<AdminAnnouncements />} />
+              <Route path="/admin/page-content" element={<AdminPageContent />} />
               <Route path="*" element={<Navigate to="/admin" replace />} />
             </>
           ) : (
@@ -230,7 +247,7 @@ function App() {
               <Route path="/background" element={<Background />} />
               <Route path="/projects" element={<Projects />} />
               <Route path="/bulletin" element={<BulletinBoard />} />
-              <Route path="/register" element={<RegistrationForm />} />
+              <Route path="/register" element={<RegistrationForm user={user} userData={userData} />} />
               <Route path="/seed" element={<SeedDatabase />} />
               <Route path="/admin" element={<Navigate to="/" replace />} />
               <Route path="/database" element={<Navigate to="/" replace />} />

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { db } from '../firebase';
 import { collection, getDocs, orderBy, query, where } from 'firebase/firestore';
-import { Briefcase, User } from 'lucide-react';
+import { Briefcase, User, Mail } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function BulletinBoard() {
@@ -70,8 +70,8 @@ export default function BulletinBoard() {
                 </p>
                 
                 <div style={{ borderTop: '1px solid var(--border)', paddingTop: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', color: '#888' }}>
-                  <User size={16} />
-                  <span>Owned by {biz.firstName} {biz.lastName}</span>
+                  <Mail size={16} />
+                  <span>Contact: {biz.email}</span>
                 </div>
               </div>
             ))

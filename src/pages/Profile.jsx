@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { db } from '../firebase';
-import { doc, updateDoc } from 'firebase/firestore';
+import { doc, updateDoc, setDoc, deleteDoc, getDoc, serverTimestamp } from 'firebase/firestore';
 import { updateProfile } from 'firebase/auth';
-import { User, Mail, Phone, MapPin, Calendar, Heart, Shield, Award, Edit, Save, X, Plus, Trash2, CheckCircle2 } from 'lucide-react';
+import { User, Mail, Phone, MapPin, Calendar, Heart, Shield, Award, Edit, Save, X, Plus, Trash2, CheckCircle2, Briefcase } from 'lucide-react';
 
 export default function Profile({ user, userData }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -20,8 +21,11 @@ export default function Profile({ user, userData }) {
   const [bloodType, setBloodType] = useState('');
   const [philhealthNo, setPhilhealthNo] = useState('');
   const [familyInformation, setFamilyInformation] = useState([]);
+  const [businessName, setBusinessName] = useState('');
+  const [businessType, setBusinessType] = useState('');
+  const [businessDescription, setBusinessDescription] = useState('');
 
-  // Initialize form with userData
+  // Initialize form with userData (excluding business info)
   useEffect(() => {
     if (userData) {
       setFirstName(userData.firstName || '');
@@ -35,6 +39,32 @@ export default function Profile({ user, userData }) {
       setFamilyInformation(userData.familyInformation || []);
     }
   }, [userData]);
+
+  // Fetch business details from bulletinBoard collection by user.email
+  useEffect(() => {
+    const fetchBusinessDetails = async () => {
+      if (user?.email) {
+        try {
+          const snap = await getDoc(doc(db, 'bulletinBoard', user.email));
+          if (snap.exists()) {
+            const data = snap.data();
+            setBusinessName(data.businessName || '');
+            setBusinessType(data.businessType || '');
+            setBusinessDescription(data.businessDescription || '');
+          } else {
+            setBusinessName('');
+            setBusinessType('');
+            setBusinessDescription('');
+          }
+        } catch (err) {
+          console.error("Error fetching business details from bulletinBoard:", err);
+        }
+      }
+    };
+    if (!isEditing) {
+      fetchBusinessDetails();
+    }
+  }, [user, isEditing]);
 
   const handleAddFamilyMember = () => {
     setFamilyInformation(prev => [...prev, { name: '', address: '', relationship: '', phone: '' }]);
@@ -52,7 +82,7 @@ export default function Profile({ user, userData }) {
     });
   };
 
-  const handleCancel = () => {
+  const handleCancel = async () => {
     setIsEditing(false);
     setError('');
     setSuccess('');
@@ -67,6 +97,25 @@ export default function Profile({ user, userData }) {
       setBloodType(userData.bloodType || '');
       setPhilhealthNo(userData.philhealthNo || userData.philhealth || '');
       setFamilyInformation(userData.familyInformation || []);
+    }
+    
+    // Re-fetch business details from bulletinBoard
+    if (user?.email) {
+      try {
+        const snap = await getDoc(doc(db, 'bulletinBoard', user.email));
+        if (snap.exists()) {
+          const data = snap.data();
+          setBusinessName(data.businessName || '');
+          setBusinessType(data.businessType || '');
+          setBusinessDescription(data.businessDescription || '');
+        } else {
+          setBusinessName('');
+          setBusinessType('');
+          setBusinessDescription('');
+        }
+      } catch (err) {
+        console.error("Error loading business details on cancel:", err);
+      }
     }
   };
 
@@ -102,6 +151,21 @@ export default function Profile({ user, userData }) {
         philhealth: philhealthNo, // Maintain legacy support
         familyInformation
       });
+
+      // 2. Update or delete listing in bulletinBoard
+      const bizRef = doc(db, 'bulletinBoard', user.email);
+      if (businessName.trim()) {
+        await setDoc(bizRef, {
+          email: user.email,
+          ownerId: user.uid,
+          businessName,
+          businessType,
+          businessDescription,
+          updatedAt: serverTimestamp()
+        }, { merge: true });
+      } else {
+        await deleteDoc(bizRef);
+      }
 
       // 2. Update Firebase Auth Display Name if changed
       const fullDisplayName = `${firstName} ${middleName ? middleName + ' ' : ''}${surname}`.trim();
@@ -336,6 +400,83 @@ export default function Profile({ user, userData }) {
             )}
           </div>
 
+        </div>
+
+        {/* Business Information Section */}
+        <div className="card" style={{ padding: '1.75rem', marginBottom: '2rem' }}>
+          <h3 style={{ 
+            color: 'var(--primary)', 
+            fontSize: '1rem', 
+            fontWeight: '700', 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: '0.5rem', 
+            borderBottom: '1px solid var(--border)', 
+            paddingBottom: '0.75rem',
+            marginBottom: '1.25rem' 
+          }}>
+            <Briefcase size={18} /> Business Directory Listing
+          </h3>
+
+          {isEditing ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <div className="form-group" style={{ marginBottom: 0 }}>
+                <label className="form-label">Business Name</label>
+                <input 
+                  type="text" 
+                  className="form-control" 
+                  value={businessName} 
+                  onChange={(e) => setBusinessName(e.target.value)} 
+                  placeholder="e.g. Acme Corp (leave blank if none)"
+                />
+              </div>
+              <div className="form-group" style={{ marginBottom: 0 }}>
+                <label className="form-label">Business Type / Category</label>
+                <input 
+                  type="text" 
+                  className="form-control" 
+                  value={businessType} 
+                  onChange={(e) => setBusinessType(e.target.value)} 
+                  placeholder="e.g. Services, Retail, Food"
+                />
+              </div>
+              <div className="form-group" style={{ marginBottom: 0 }}>
+                <label className="form-label">Business Description</label>
+                <textarea 
+                  className="form-control" 
+                  rows="3" 
+                  value={businessDescription} 
+                  onChange={(e) => setBusinessDescription(e.target.value)} 
+                  placeholder="Describe your business offerings..."
+                  style={{ resize: 'vertical' }}
+                />
+              </div>
+            </div>
+          ) : (
+            <div>
+              {!businessName.trim() ? (
+                <div style={{ textAlign: 'center', padding: '1.5rem 0' }}>
+                  <p style={{ fontSize: '0.95rem', color: '#666', fontStyle: 'italic', marginBottom: '1rem' }}>
+                    You have not registered a business listing on the Bulletin Board yet.
+                  </p>
+                  <Link to="/register" className="btn btn-secondary" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none', padding: '0.5rem 1.5rem', fontSize: '0.85rem' }}>
+                    <Plus size={14} /> Register Business
+                  </Link>
+                </div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem', fontSize: '0.95rem' }}>
+                  <div><strong>Business Name:</strong> {businessName}</div>
+                  <div>
+                    <strong>Category / Type: </strong>
+                    <span className="badge" style={{ backgroundColor: 'var(--secondary)', color: 'var(--primary)', fontWeight: 'bold', textTransform: 'uppercase', fontSize: '0.7rem', padding: '0.15rem 0.5rem', borderRadius: '4px' }}>
+                      {businessType || 'General'}
+                    </span>
+                  </div>
+                  <div><strong>Description:</strong> {businessDescription || 'No description provided.'}</div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Family Information Section */}

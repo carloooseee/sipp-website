@@ -1,23 +1,44 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Briefcase, Calendar } from 'lucide-react';
+import { db } from '../firebase';
+import { collection, getDocs, orderBy, query } from 'firebase/firestore';
 
 export default function Projects() {
-  const projects = [
+  const [projects, setProjects] = useState([
     {
-      id: 1,
-      title: "GABGABGAB GAB GAB",
+      id: 'default-1',
+      title: "Digital Business Directory Launch",
       type: "Past",
-      description: "GABGABGAB GAB GAB",
-      date: "GABGABGAB GAB GAB"
+      description: "Developed and launched the KDBM digital portal connecting local professionals and businesses.",
+      date: "January 2024"
     },
-        {
-      id: 1,
-      title: "GABGABGAB GAB GAB",
+    {
+      id: 'default-2',
+      title: "Annual Professional Workshop Series",
       type: "Upcoming",
-      description: "GABGABGAB GAB GAB",
-      date: "GABGABGAB GAB GAB"
-    },
-  ];
+      description: "A series of lectures and mentorship sessions for local entrepreneurs and professionals.",
+      date: "Q3 2024"
+    }
+  ]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const q = query(collection(db, 'projects'), orderBy('createdAt', 'desc'));
+        const snapshot = await getDocs(q);
+        if (!snapshot.empty) {
+          const fetched = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+          setProjects(fetched);
+        }
+      } catch (err) {
+        console.error('Error fetching projects:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProjects();
+  }, []);
 
   return (
     <div className="animate-fade-in">

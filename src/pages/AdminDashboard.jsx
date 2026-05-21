@@ -71,11 +71,13 @@ export default function AdminDashboard() {
 
     const bizSamples = [
       {
-        ownerId: "sample-1", firstName: "Jane", lastName: "Doe", 
+        email: "jane@example.com",
+        ownerId: "sample-1",
         businessName: "Jane's Consulting", businessType: "Services", businessDescription: "Expert business consulting.", createdAt: new Date()
       },
       {
-        ownerId: "sample-2", firstName: "John", lastName: "Smith", 
+        email: "john@example.com",
+        ownerId: "sample-2",
         businessName: "Smith Tech", businessType: "IT", businessDescription: "IT solutions provider.", createdAt: new Date()
       }
     ];
@@ -86,7 +88,7 @@ export default function AdminDashboard() {
         await setDoc(doc(db, "members", id), data);
       }
       for (const biz of bizSamples) {
-        await setDoc(doc(collection(db, "bulletinBoard")), biz);
+        await setDoc(doc(db, "bulletinBoard", biz.email), biz);
       }
       await fetchMembers();
     } catch (err) {

@@ -1,21 +1,39 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Megaphone, ArrowRight, ShieldCheck, TrendingUp } from 'lucide-react';
+import { db } from '../firebase';
+import { collection, getDocs, limit, orderBy, query } from 'firebase/firestore';
 
 export default function HomePage() {
-  const latestAnnouncements = [
+  const [latestAnnouncements, setLatestAnnouncements] = useState([
     {
-      id: 1,
+      id: 'default-1',
       title: "Annual General Meeting 2024",
       content: "Join us for our upcoming AGM on May 15th to discuss the future roadmap of KDBM.",
       date: "2024-04-20"
     },
     {
-      id: 2,
+      id: 'default-2',
       title: "New Member Networking Night",
       content: "Meet and greet session for all new members registered in the first quarter.",
       date: "2024-04-18"
     }
-  ];
+  ]);
+
+  useEffect(() => {
+    const fetchLatest = async () => {
+      try {
+        const q = query(collection(db, 'announcements'), orderBy('createdAt', 'desc'), limit(2));
+        const snapshot = await getDocs(q);
+        if (!snapshot.empty) {
+          const fetched = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+          setLatestAnnouncements(fetched);
+        }
+      } catch (err) {
+        console.error('Error fetching homepage announcements:', err);
+      }
+    };
+    fetchLatest();
+  }, []);
 
   return (
     <div className="animate-fade-in">
