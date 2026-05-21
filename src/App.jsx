@@ -4,23 +4,23 @@ import { auth } from './firebase';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 
 // Pages
-import HomePage from './pages/HomePage';
-import RegistrationForm from './pages/RegistrationForm';
-import AdminDashboard from './pages/AdminDashboard';
-import Announcements from './pages/Announcements';
-import AboutKDBM from './pages/AboutKDBM';
-import Contact from './pages/Contact';
+import HomePage from './pages/member/HomePage';
+import RegistrationForm from './pages/member/RegistrationForm';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import Announcements from './pages/member/Announcements';
+import AboutKDBM from './pages/member/AboutKDBM';
+import Contact from './pages/member/Contact';
 import Auth from './pages/Auth';
 
-import BulletinBoard from './pages/BulletinBoard';
-import Projects from './pages/Projects';
+import BulletinBoard from './pages/member/BulletinBoard';
+import Projects from './pages/member/Projects';
 import SeedDatabase from './pages/SeedDatabase';
-import Background from './pages/Background';
-import Profile from './pages/Profile';
+import Background from './pages/member/Background';
+import Profile from './pages/member/Profile';
 import kdbmLogo from './assets/kdbm_logo.png';
-import AdminAnnouncements from './pages/AdminAnnouncements';
-import AdminProjects from './pages/AdminProjects';
-import AdminBulletinBoard from './pages/AdminBulletinBoard';
+import AdminAnnouncements from './pages/admin/AdminAnnouncements';
+import AdminProjects from './pages/admin/AdminProjects';
+import AdminBulletinBoard from './pages/admin/AdminBulletinBoard';
 
 import { db } from './firebase';
 import { onSnapshot, doc, setDoc, getDocs, query, collection, where } from 'firebase/firestore';

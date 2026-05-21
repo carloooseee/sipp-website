@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Megaphone, Calendar, ArrowRight } from 'lucide-react';
-import { db } from '../firebase';
+import { db } from '../../firebase';
 import { collection, getDocs, orderBy, query } from 'firebase/firestore';
 
 export default function Announcements() {

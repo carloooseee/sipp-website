@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Megaphone, ArrowRight, ShieldCheck, TrendingUp } from 'lucide-react';
-import { db } from '../firebase';
+import { db } from '../../firebase';
 import { collection, getDocs, limit, orderBy, query } from 'firebase/firestore';
 
 export default function HomePage() {

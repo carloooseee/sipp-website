@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Briefcase, Calendar } from 'lucide-react';
-import { db } from '../firebase';
+import { db } from '../../firebase';
 import { collection, getDocs, orderBy, query } from 'firebase/firestore';
 
 export default function Projects() {

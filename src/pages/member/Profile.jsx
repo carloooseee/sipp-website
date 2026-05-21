@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { db } from '../firebase';
+import { db } from '../../firebase';
 import { doc, updateDoc, setDoc, deleteDoc, getDoc, serverTimestamp } from 'firebase/firestore';
 import { updateProfile } from 'firebase/auth';
 import { User, Mail, Phone, MapPin, Calendar, Heart, Shield, Award, Edit, Save, X, Plus, Trash2, CheckCircle2, Briefcase } from 'lucide-react';

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { db } from '../firebase';
+import { db } from '../../firebase';
 import { collection, getDocs, doc, updateDoc, query, where, setDoc } from 'firebase/firestore';
 import { ShieldCheck, UserCheck, Clock, Eye, CheckCircle, Database } from 'lucide-react';
 
