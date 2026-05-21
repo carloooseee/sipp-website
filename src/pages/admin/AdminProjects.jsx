@@ -104,7 +104,7 @@ export default function AdminProjects() {
         <p className="page-subtitle">Add or edit community initiatives and professional projects.</p>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem' }}>
+      <div className="grid">
         {/* Create Project Form */}
         <div className="card" style={{ height: 'fit-content' }}>
           <h2 style={{ fontSize: '1.25rem', fontWeight: '800', color: 'var(--primary)', borderBottom: '1px solid var(--border)', paddingBottom: '0.75rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -129,7 +129,7 @@ export default function AdminProjects() {
               <input type="text" className="form-control" value={title} onChange={(e) => setTitle(e.target.value)} required />
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+            <div className="grid-2-cols">
               <div className="form-group" style={{ marginBottom: 0 }}>
                 <label className="form-label">Type</label>
                 <select className="form-control" value={type} onChange={(e) => setType(e.target.value)}>
@@ -143,7 +143,7 @@ export default function AdminProjects() {
               </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+            <div className="grid-2-cols">
               <div className="form-group" style={{ marginBottom: 0 }}>
                 <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}><User size={12} /> Project Lead</label>
                 <input type="text" className="form-control" placeholder="e.g. Jane Doe" value={projectLead} onChange={(e) => setProjectLead(e.target.value)} required />

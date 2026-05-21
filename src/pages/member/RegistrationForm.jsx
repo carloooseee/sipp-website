@@ -121,7 +121,7 @@ export default function RegistrationForm({ user, userData }) {
             <div style={{ fontSize: '0.8rem', color: '#B45309', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.25rem' }}>
               Listing Owner Details
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.5rem', fontSize: '0.95rem', color: '#78350F' }}>
+            <div className="grid-auto-fit" style={{ gap: '0.5rem', fontSize: '0.95rem', color: '#78350F' }}>
               <div><strong>Email:</strong> {user?.email || userData?.email || ''}</div>
             </div>
             <div style={{ fontSize: '0.8rem', color: '#D97706', marginTop: '0.5rem' }}>

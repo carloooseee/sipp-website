@@ -112,7 +112,7 @@ export default function AdminDashboard() {
         </button>
       </div>
 
-      <div className="grid" style={{ gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '2rem' }}>
+      <div className="grid-2-cols" style={{ marginBottom: '2rem' }}>
         <div className="card" style={{ marginBottom: 0, padding: '1.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <div style={{ padding: '1rem', backgroundColor: '#FEF3C7', borderRadius: '8px' }}>
             <Clock size={32} color="#D97706" />
@@ -199,10 +199,10 @@ export default function AdminDashboard() {
                     {selectedMember === member.id && (
                       <tr style={{ backgroundColor: '#F8FAFC' }}>
                         <td colSpan="4" style={{ padding: '2rem', borderBottom: '2px solid var(--border)' }}>
-                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginBottom: '2rem' }}>
+                          <div className="grid-2-cols" style={{ marginBottom: '2rem' }}>
                             <div>
                               <h4 style={{ color: 'var(--primary)', fontSize: '0.85rem', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: '1rem', borderBottom: '1px solid var(--border)', paddingBottom: '0.5rem' }}>Personal Identity</h4>
-                              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', fontSize: '0.9rem', lineHeight: '1.8' }}>
+                              <div className="grid-2-cols" style={{ fontSize: '0.9rem', lineHeight: '1.8' }}>
                                 <div><strong>Surname:</strong> {member.lastName || 'N/A'}</div>
                                 <div><strong>First Name:</strong> {member.firstName || 'N/A'}</div>
                                 <div><strong>Middle Name:</strong> {member.middleName || 'N/A'}</div>

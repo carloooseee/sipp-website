@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation, Navigate, useNavigate } from 'react-router-dom';
 import { auth } from './firebase';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { Menu, X } from 'lucide-react';
 
 // Pages
 import HomePage from './pages/member/HomePage';
@@ -79,12 +80,12 @@ const syncMemberProfileToUid = async (currentUser, uidSnap) => {
   return null;
 };
 
-const NavLink = ({ to, children }) => {
+const NavLink = ({ to, children, onClick }) => {
   const location = useLocation();
   const isActive = location.pathname === to;
   
   return (
-    <Link to={to} className={`nav-link ${isActive ? 'active' : ''}`}>
+    <Link to={to} className={`nav-link ${isActive ? 'active' : ''}`} onClick={onClick}>
       {children}
     </Link>
   );
@@ -110,6 +111,9 @@ function App() {
   const [user, setUser] = useState(null);
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  
+  const closeMenu = () => setIsMobileMenuOpen(false);
 
   useEffect(() => {
     let unsubscribeUid = null;
@@ -197,31 +201,40 @@ function App() {
               <img src={kdbmLogo} alt="KDBM Logo" style={{ height: '32px', width: 'auto', objectFit: 'contain' }} />
               <span>{isAdmin ? 'KDBM ADMIN' : 'KDBM'}</span>
             </Link>
-            <nav className="nav-links">
+            
+            <button 
+              className="nav-menu-toggle" 
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              aria-label="Toggle Navigation"
+            >
+              {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
+            </button>
+            
+            <nav className={`nav-links ${isMobileMenuOpen ? 'mobile-open' : ''}`}>
               {isAdmin ? (
                 <>
-                  <NavLink to="/admin">MEMBERS</NavLink>
-                  <NavLink to="/admin/bulletin">BULLETIN BOARD</NavLink>
-                  <NavLink to="/admin/projects">PROJECTS</NavLink>
-                  <NavLink to="/admin/announcements">ANNOUNCEMENTS</NavLink>
+                  <NavLink to="/admin" onClick={closeMenu}>MEMBERS</NavLink>
+                  <NavLink to="/admin/bulletin" onClick={closeMenu}>BULLETIN BOARD</NavLink>
+                  <NavLink to="/admin/projects" onClick={closeMenu}>PROJECTS</NavLink>
+                  <NavLink to="/admin/announcements" onClick={closeMenu}>ANNOUNCEMENTS</NavLink>
                 </>
               ) : (
                 <>
-                  <NavLink to="/">HOME</NavLink>
-                  <NavLink to="/about">ABOUT</NavLink>
-                  <NavLink to="/background">BACKGROUND</NavLink>
-                  <NavLink to="/projects">PROJECTS</NavLink>
-                  <NavLink to="/bulletin">BULLETIN BOARD</NavLink>
-                  <NavLink to="/announcements">ANNOUNCEMENTS</NavLink>
+                  <NavLink to="/" onClick={closeMenu}>HOME</NavLink>
+                  <NavLink to="/about" onClick={closeMenu}>ABOUT</NavLink>
+                  <NavLink to="/background" onClick={closeMenu}>BACKGROUND</NavLink>
+                  <NavLink to="/projects" onClick={closeMenu}>PROJECTS</NavLink>
+                  <NavLink to="/bulletin" onClick={closeMenu}>BULLETIN BOARD</NavLink>
+                  <NavLink to="/announcements" onClick={closeMenu}>ANNOUNCEMENTS</NavLink>
                 </>
               )}
             </nav>
           </div>
-          <div className="nav-actions">
-            <Link to="/profile" className="user-display" title="View Profile" style={{ textDecoration: 'none', cursor: 'pointer' }}>
+          <div className={`nav-actions ${isMobileMenuOpen ? 'mobile-open' : ''}`}>
+            <Link to="/profile" className="user-display" title="View Profile" style={{ textDecoration: 'none', cursor: 'pointer' }} onClick={closeMenu}>
               {user.displayName || user.email}
             </Link>
-            <button onClick={handleLogout} className="btn-secondary btn btn-logout">LOGOUT</button>
+            <button onClick={() => { handleLogout(); closeMenu(); }} className="btn-secondary btn btn-logout">LOGOUT</button>
           </div>
         </div>
       </header>

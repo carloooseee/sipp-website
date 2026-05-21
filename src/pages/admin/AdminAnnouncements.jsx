@@ -107,7 +107,7 @@ export default function AdminAnnouncements() {
         <p className="page-subtitle">Publish dynamic updates, events, and news for members.</p>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem' }}>
+      <div className="grid">
         {/* Create Announcement Form */}
         <div className="card" style={{ height: 'fit-content' }}>
           <h2 style={{ fontSize: '1.25rem', fontWeight: '800', color: 'var(--primary)', borderBottom: '1px solid var(--border)', paddingBottom: '0.75rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -132,7 +132,7 @@ export default function AdminAnnouncements() {
               <input type="text" className="form-control" value={title} onChange={(e) => setTitle(e.target.value)} required />
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+            <div className="grid-2-cols">
               <div className="form-group" style={{ marginBottom: 0 }}>
                 <label className="form-label">Category</label>
                 <select className="form-control" value={category} onChange={(e) => setCategory(e.target.value)}>
@@ -162,7 +162,7 @@ export default function AdminAnnouncements() {
               Event / Contact Info (Optional)
             </h3>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+            <div className="grid-2-cols">
               <div className="form-group" style={{ marginBottom: 0 }}>
                 <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}><MapPin size={12} /> Venue</label>
                 <input type="text" className="form-control" placeholder="e.g. Conference Room A" value={venue} onChange={(e) => setVenue(e.target.value)} />
@@ -173,7 +173,7 @@ export default function AdminAnnouncements() {
               </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+            <div className="grid-2-cols">
               <div className="form-group" style={{ marginBottom: 0 }}>
                 <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}><User size={12} /> Contact Person</label>
                 <input type="text" className="form-control" placeholder="e.g. Jane Doe" value={contactPerson} onChange={(e) => setContactPerson(e.target.value)} />

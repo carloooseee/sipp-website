@@ -270,7 +270,7 @@ export default function Auth() {
 
               {signupStep === 1 && (
                 <div className="animate-fade-in" style={{ position: 'relative' }}>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+                  <div className="grid-2-cols" style={{ gap: '0.75rem' }}>
                     <div className="form-group" style={{ marginBottom: '0.5rem' }}>
                       <label className="form-label" style={{ fontSize: '0.8rem' }}>Surname</label>
                       <input type="text" className="form-control" style={{ padding: '0.5rem' }} value={surname} onChange={(e) => setSurname(e.target.value)} required />
@@ -281,7 +281,7 @@ export default function Auth() {
                     </div>
                   </div>
 
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+                  <div className="grid-2-cols" style={{ gap: '0.75rem' }}>
                     <div className="form-group" style={{ marginBottom: '0.5rem' }}>
                       <label className="form-label" style={{ fontSize: '0.8rem' }}>Middle Name</label>
                       <input type="text" className="form-control" style={{ padding: '0.5rem' }} value={middleName} onChange={(e) => setMiddleName(e.target.value)} />
@@ -399,7 +399,7 @@ export default function Auth() {
                     <span style={{ fontSize: '0.65rem', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '0.05em', color: '#666' }}>Back</span>
                   </button>
 
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+                  <div className="grid-2-cols" style={{ gap: '0.75rem' }}>
                     <div className="form-group" style={{ marginBottom: '0.5rem' }}>
                       <label className="form-label" style={{ fontSize: '0.8rem' }}>Contact No.</label>
                       <input type="tel" className="form-control" style={{ padding: '0.5rem' }} value={phone} onChange={(e) => setPhone(e.target.value)} required />
@@ -410,7 +410,7 @@ export default function Auth() {
                     </div>
                   </div>
 
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+                  <div className="grid-2-cols" style={{ gap: '0.75rem' }}>
                     <div className="form-group" style={{ marginBottom: '0.5rem' }}>
                       <label className="form-label" style={{ fontSize: '0.8rem' }}>Password</label>
                       <input type="password" className="form-control" style={{ padding: '0.5rem' }} value={password} onChange={(e) => setPassword(e.target.value)} required />
@@ -449,7 +449,7 @@ export default function Auth() {
                         >
                           Remove
                         </button>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', marginTop: '0.5rem' }}>
+                        <div className="grid-2-cols" style={{ gap: '0.5rem', marginTop: '0.5rem' }}>
                           <div className="form-group" style={{ marginBottom: '0.5rem' }}>
                             <label className="form-label" style={{ fontSize: '0.75rem' }}>Name</label>
                             <input
@@ -473,7 +473,7 @@ export default function Auth() {
                             />
                           </div>
                         </div>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
+                        <div className="grid-2-cols" style={{ gap: '0.5rem' }}>
                           <div className="form-group" style={{ marginBottom: '0.5rem' }}>
                             <label className="form-label" style={{ fontSize: '0.75rem' }}>Contact No.</label>
                             <input

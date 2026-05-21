@@ -45,7 +45,7 @@ export default function HomePage() {
         </p>
       </section>
 
-      <div className="grid" style={{ gridTemplateColumns: '2fr 1fr', gap: '3rem' }}>
+      <div className="grid-2-cols-uneven">
         {/* Main Content Area */}
         <div>
           <h2 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1.5rem', color: 'var(--primary)', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
@@ -57,7 +57,7 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+          <div className="grid-2-cols">
             <div className="card" style={{ backgroundColor: '#f8f9fa' }}>
               <ShieldCheck color="var(--primary)" style={{ marginBottom: '1rem' }} />
               <h4 style={{ fontWeight: '800', marginBottom: '0.5rem' }}>Verified Members</h4>
@@ -217,7 +217,7 @@ export default function HomePage() {
                   padding: '1rem',
                   marginBottom: '1.5rem',
                   display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 220px), 1fr))',
                   gap: '0.75rem'
                 }}>
                   {selectedAnnouncement.venue && (

@@ -299,7 +299,7 @@ export default function Profile({ user, userData }) {
 
       <form onSubmit={handleSave}>
         {/* Personal & Contact Details Cards */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
+        <div className="grid-auto-fit" style={{ marginBottom: '2rem' }}>
           
           {/* Personal Identity */}
           <div className="card" style={{ margin: 0, padding: '1.75rem' }}>
@@ -538,7 +538,7 @@ export default function Profile({ user, userData }) {
 
                   {isEditing ? (
                     <div style={{ marginTop: '0.5rem' }}>
-                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.75rem', marginBottom: '0.75rem' }}>
+                      <div className="grid-auto-fit" style={{ marginBottom: '0.75rem' }}>
                         <div className="form-group" style={{ marginBottom: 0 }}>
                           <label className="form-label" style={{ fontSize: '0.8rem' }}>Name</label>
                           <input 
@@ -562,7 +562,7 @@ export default function Profile({ user, userData }) {
                           />
                         </div>
                       </div>
-                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.75rem' }}>
+                      <div className="grid-auto-fit">
                         <div className="form-group" style={{ marginBottom: 0 }}>
                           <label className="form-label" style={{ fontSize: '0.8rem' }}>Contact No.</label>
                           <input 
@@ -586,7 +586,7 @@ export default function Profile({ user, userData }) {
                       </div>
                     </div>
                   ) : (
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.75rem', fontSize: '0.9rem' }}>
+                    <div className="grid-auto-fit" style={{ fontSize: '0.9rem' }}>
                       <div><strong>Name:</strong> {member.name || 'N/A'}</div>
                       <div><strong>Relationship:</strong> {member.relationship || 'N/A'}</div>
                       <div><strong>Contact No.:</strong> {member.phone || 'N/A'}</div>

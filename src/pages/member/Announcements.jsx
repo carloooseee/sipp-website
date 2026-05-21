@@ -212,7 +212,7 @@ export default function Announcements() {
                   padding: '1rem',
                   marginBottom: '1.5rem',
                   display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 220px), 1fr))',
                   gap: '0.75rem'
                 }}>
                   {selectedAnnouncement.venue && (
