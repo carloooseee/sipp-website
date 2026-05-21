@@ -20,7 +20,6 @@ import Profile from './pages/Profile';
 import kdbmLogo from './assets/kdbm_logo.png';
 import AdminAnnouncements from './pages/AdminAnnouncements';
 import AdminProjects from './pages/AdminProjects';
-import AdminPageContent from './pages/AdminPageContent';
 import AdminBulletinBoard from './pages/AdminBulletinBoard';
 
 import { db } from './firebase';
@@ -205,7 +204,6 @@ function App() {
                   <NavLink to="/admin/bulletin">BULLETIN BOARD</NavLink>
                   <NavLink to="/admin/projects">PROJECTS</NavLink>
                   <NavLink to="/admin/announcements">ANNOUNCEMENTS</NavLink>
-                  <NavLink to="/admin/page-content">PAGE CONTENT</NavLink>
                 </>
               ) : (
                 <>
@@ -237,7 +235,6 @@ function App() {
               <Route path="/admin/bulletin" element={<AdminBulletinBoard />} />
               <Route path="/admin/projects" element={<AdminProjects />} />
               <Route path="/admin/announcements" element={<AdminAnnouncements />} />
-              <Route path="/admin/page-content" element={<AdminPageContent />} />
               <Route path="*" element={<Navigate to="/admin" replace />} />
             </>
           ) : (
