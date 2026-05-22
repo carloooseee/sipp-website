@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { db } from '../../firebase';
-import { collection, getDocs, doc, updateDoc, query, where, setDoc } from 'firebase/firestore';
-import { ShieldCheck, UserCheck, Clock, Eye, CheckCircle, Database } from 'lucide-react';
+import { collection, getDocs, doc, updateDoc, query, where } from 'firebase/firestore';
+import { ShieldCheck, UserCheck, Clock, Eye, CheckCircle } from 'lucide-react';
 
 export default function AdminDashboard() {
   const [members, setMembers] = useState([]);
@@ -54,49 +54,6 @@ export default function AdminDashboard() {
     }
   };
 
-  const generateSampleData = async () => {
-    setLoading(true);
-    const samples = [
-      {
-        id: "sample-1",
-        firstName: "Jane", lastName: "Doe", email: "jane@example.com", phone: "555-0101",
-        address: "123 Business Rd, KDBM", role: "Member", status: "Pending", createdAt: new Date()
-      },
-      {
-        id: "sample-2",
-        firstName: "John", lastName: "Smith", email: "john@example.com", phone: "555-0202",
-        address: "456 Tech Ave, KDBM", role: "Member", status: "Approved", createdAt: new Date()
-      }
-    ];
-
-    const bizSamples = [
-      {
-        email: "jane@example.com",
-        ownerId: "sample-1",
-        businessName: "Jane's Consulting", businessType: "Services", businessDescription: "Expert business consulting.", createdAt: new Date()
-      },
-      {
-        email: "john@example.com",
-        ownerId: "sample-2",
-        businessName: "Smith Tech", businessType: "IT", businessDescription: "IT solutions provider.", createdAt: new Date()
-      }
-    ];
-
-    try {
-      for (const sample of samples) {
-        const { id, ...data } = sample;
-        await setDoc(doc(db, "members", id), data);
-      }
-      for (const biz of bizSamples) {
-        await setDoc(doc(db, "bulletinBoard", biz.email), biz);
-      }
-      await fetchMembers();
-    } catch (err) {
-      console.error("Error generating sample data:", err);
-      alert("Failed to generate sample data.");
-    }
-  };
-
   const pendingCount = members.filter(m => m.status === 'Pending').length;
   const approvedCount = members.filter(m => m.status === 'Approved').length;
 
@@ -107,9 +64,6 @@ export default function AdminDashboard() {
           <h1 className="page-title">Admin Dashboard</h1>
           <p className="page-subtitle" style={{ marginBottom: 0 }}>Manage member registrations and submissions.</p>
         </div>
-        <button onClick={generateSampleData} className="btn btn-secondary" style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-          <Database size={16} /> GENERATE SAMPLES
-        </button>
       </div>
 
       <div className="grid-2-cols" style={{ marginBottom: '2rem' }}>
