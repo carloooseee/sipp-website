@@ -7,6 +7,11 @@ import pic5 from './pictures/pic5.jpg';
 import pic6 from './pictures/pic6.jpg';
 import pic7 from './pictures/pic7.jpg';
 import kdbmOverview from './pictures/kdbm_overview.jpg';
+import kdbmJenny from './pictures/kdbmjenny.jpg';
+import kdbmchapter from './pictures/kdbmchapter.jpg';
+import kdbmorg from './pictures/kdbmorg.jpg';
+import kdbmabout from './pictures/kdbmabout.jpg';
+import kdbmprojects from './pictures/kdbmprojects.jpg';
 import communityBanner from './22.jpg';
 import loginBg from './loginsignup.jpg';
 
@@ -19,6 +24,11 @@ export {
   pic6,
   pic7,
   kdbmOverview,
+  kdbmJenny,
+  kdbmchapter,
+  kdbmorg,
+  kdbmabout,
+  kdbmprojects,
   communityBanner,
   loginBg,
 };

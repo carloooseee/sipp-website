@@ -1,6 +1,6 @@
 import React from 'react';
 import { History, MapPin, Landmark } from 'lucide-react';
-import { pic2, pic6 } from '../../assets/pictures';
+import { kdbmorg, kdbmJenny, kdbmchapter } from '../../assets/pictures';
 
 export default function Background() {
   return (
@@ -31,8 +31,8 @@ export default function Background() {
           </div>
           <div>
             <img
-              src={pic2}
-              alt="KDBM organizational background"
+              src={kdbmJenny}
+              alt="Mayor Jenny Austria-Barzaga and KDBM"
               style={{
                 width: '100%',
                 height: 'auto',
@@ -49,7 +49,7 @@ export default function Background() {
       <div className="grid">
         <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
           <div style={{ height: '140px', overflow: 'hidden' }}>
-            <img src={pic6} alt="KDBM women volunteers" className="img-cover" style={{ height: '140px' }} />
+            <img src={kdbmorg} alt="KDBM women volunteers" className="img-cover" style={{ height: '140px' }} />
           </div>
           <div style={{ padding: '1.5rem', textAlign: 'center' }}>
             <div
@@ -72,7 +72,7 @@ export default function Background() {
         </div>
         <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
           <div style={{ height: '140px', overflow: 'hidden' }}>
-            <img src={pic2} alt="KDBM chapters in Dasmariñas" className="img-cover" style={{ height: '140px' }} />
+            <img src={kdbmchapter} alt="KDBM chapters in Dasmariñas" className="img-cover" style={{ height: '140px' }} />
           </div>
           <div style={{ padding: '1.5rem', textAlign: 'center' }}>
             <div

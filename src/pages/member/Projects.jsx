@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Briefcase, Calendar, X, User, Coins, Activity, ArrowRight } from 'lucide-react';
 import { db } from '../../firebase';
 import { collection, getDocs, orderBy, query } from 'firebase/firestore';
-import { projectImages } from '../../assets/pictures';
+import { projectImages, kdbmprojects } from '../../assets/pictures';
 
 export default function Projects() {
   const [projects, setProjects] = useState([]);
@@ -39,7 +39,7 @@ export default function Projects() {
     };
   }, [selectedProject]);
 
-  const projectsHero = projectImages[0];
+  const projectsHero = kdbmprojects;
 
   return (
     <div className="animate-fade-in">
@@ -66,11 +66,11 @@ export default function Projects() {
           {projects.map((project, index) => {
             const projectImg = projectImages[index % projectImages.length];
             return (
-              <div 
-                key={project.id} 
-                className="card" 
-                style={{ 
-                  position: 'relative', 
+              <div
+                key={project.id}
+                className="card"
+                style={{
+                  position: 'relative',
                   overflow: 'hidden',
                   cursor: 'pointer',
                   transition: 'all 0.2s ease-in-out',
@@ -100,8 +100,8 @@ export default function Projects() {
                     gap: '0.35rem',
                     zIndex: 2
                   }}>
-                    <span style={{ 
-                      padding: '0.2rem 0.6rem', 
+                    <span style={{
+                      padding: '0.2rem 0.6rem',
                       backgroundColor: project.type === 'Past' ? 'rgba(226, 232, 240, 0.9)' : 'rgba(198, 246, 213, 0.9)',
                       color: project.type === 'Past' ? '#4A5568' : '#22543D',
                       borderRadius: '999px',
@@ -112,16 +112,16 @@ export default function Projects() {
                       {project.type.toUpperCase()}
                     </span>
                     {project.status && (
-                      <span style={{ 
-                        padding: '0.2rem 0.6rem', 
-                        backgroundColor: 
+                      <span style={{
+                        padding: '0.2rem 0.6rem',
+                        backgroundColor:
                           project.status === 'Completed' ? 'rgba(209, 250, 229, 0.9)' :
-                          project.status === 'In Progress' ? 'rgba(219, 234, 254, 0.9)' :
-                          project.status === 'Delayed' ? 'rgba(254, 226, 226, 0.9)' : 'rgba(254, 243, 199, 0.9)',
-                        color: 
+                            project.status === 'In Progress' ? 'rgba(219, 234, 254, 0.9)' :
+                              project.status === 'Delayed' ? 'rgba(254, 226, 226, 0.9)' : 'rgba(254, 243, 199, 0.9)',
+                        color:
                           project.status === 'Completed' ? '#065F46' :
-                          project.status === 'In Progress' ? '#1E40AF' :
-                          project.status === 'Delayed' ? '#991B1B' : '#92400E',
+                            project.status === 'In Progress' ? '#1E40AF' :
+                              project.status === 'Delayed' ? '#991B1B' : '#92400E',
                         borderRadius: '999px',
                         fontSize: '0.65rem',
                         fontWeight: '700',
@@ -143,12 +143,12 @@ export default function Projects() {
                         {project.title}
                       </h3>
                     </div>
-                    
+
                     <p style={{ color: '#555', lineHeight: '1.5', fontSize: '0.85rem', marginBottom: '1.25rem' }}>
                       {project.shortDescription || project.description}
                     </p>
                   </div>
-                  
+
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid var(--border)', paddingTop: '0.75rem', marginTop: 'auto' }}>
                     <div style={{ fontSize: '0.75rem', color: '#888', fontWeight: '600' }}>
                       Timeline: {project.date}
@@ -166,7 +166,7 @@ export default function Projects() {
 
       {/* Modal Overlay */}
       {selectedProject && (
-        <div 
+        <div
           style={{
             position: 'fixed',
             top: 0,
@@ -183,7 +183,7 @@ export default function Projects() {
           }}
           onClick={() => setSelectedProject(null)}
         >
-          <div 
+          <div
             style={{
               backgroundColor: 'white',
               borderRadius: '8px',
@@ -209,7 +209,7 @@ export default function Projects() {
               backgroundColor: 'var(--secondary)'
             }}>
               <span style={{ fontWeight: '700', fontSize: '0.85rem', color: 'var(--primary)', letterSpacing: '0.05em' }}>PROJECT DETAILS</span>
-              <button 
+              <button
                 onClick={() => setSelectedProject(null)}
                 style={{
                   background: 'none',
@@ -232,7 +232,7 @@ export default function Projects() {
 
             {/* Banner Image in Modal */}
             <div style={{ position: 'relative', height: '200px', overflow: 'hidden' }}>
-              <img src={projectImages[projects.indexOf(selectedProject) % projectImages.length]} alt={selectedProject.title} className="modal-image" />
+              <img src={kdbmprojects} alt={selectedProject.title} className="modal-image" />
               <div style={{
                 position: 'absolute',
                 top: 0,
@@ -241,10 +241,10 @@ export default function Projects() {
                 bottom: 0,
                 background: 'linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.4))'
               }}></div>
-              
+
               <div style={{ position: 'absolute', bottom: '1rem', left: '1.5rem', display: 'flex', gap: '0.5rem' }}>
-                <span style={{ 
-                  padding: '0.2rem 0.6rem', 
+                <span style={{
+                  padding: '0.2rem 0.6rem',
                   backgroundColor: selectedProject.type === 'Past' ? 'rgba(226, 232, 240, 0.95)' : 'rgba(198, 246, 213, 0.95)',
                   color: selectedProject.type === 'Past' ? '#4A5568' : '#22543D',
                   borderRadius: '999px',
@@ -255,16 +255,16 @@ export default function Projects() {
                   {selectedProject.type.toUpperCase()}
                 </span>
                 {selectedProject.status && (
-                  <span style={{ 
-                    padding: '0.2rem 0.6rem', 
-                    backgroundColor: 
+                  <span style={{
+                    padding: '0.2rem 0.6rem',
+                    backgroundColor:
                       selectedProject.status === 'Completed' ? 'rgba(209, 250, 229, 0.95)' :
-                      selectedProject.status === 'In Progress' ? 'rgba(219, 234, 254, 0.95)' :
-                      selectedProject.status === 'Delayed' ? 'rgba(254, 226, 226, 0.95)' : 'rgba(254, 243, 199, 0.95)',
-                    color: 
+                        selectedProject.status === 'In Progress' ? 'rgba(219, 234, 254, 0.95)' :
+                          selectedProject.status === 'Delayed' ? 'rgba(254, 226, 226, 0.95)' : 'rgba(254, 243, 199, 0.95)',
+                    color:
                       selectedProject.status === 'Completed' ? '#065F46' :
-                      selectedProject.status === 'In Progress' ? '#1E40AF' :
-                      selectedProject.status === 'Delayed' ? '#991B1B' : '#92400E',
+                        selectedProject.status === 'In Progress' ? '#1E40AF' :
+                          selectedProject.status === 'Delayed' ? '#991B1B' : '#92400E',
                     borderRadius: '999px',
                     fontSize: '0.7rem',
                     fontWeight: '700',
@@ -297,7 +297,7 @@ export default function Projects() {
                   <Calendar size={16} color="var(--primary)" style={{ flexShrink: 0 }} />
                   <span><strong>Timeline:</strong> {selectedProject.date}</span>
                 </div>
-                
+
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9rem', color: '#555' }}>
                   <User size={16} color="var(--primary)" style={{ flexShrink: 0 }} />
                   <span><strong>Project Lead:</strong> {selectedProject.projectLead || 'N/A'}</span>
@@ -309,7 +309,7 @@ export default function Projects() {
                     <span><strong>Budget:</strong> {selectedProject.budget}</span>
                   </div>
                 )}
-                
+
                 {selectedProject.status && (
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9rem', color: '#555' }}>
                     <Activity size={16} color="var(--primary)" style={{ flexShrink: 0 }} />
@@ -321,10 +321,10 @@ export default function Projects() {
               <h4 style={{ fontSize: '0.95rem', fontWeight: '700', color: '#777', textTransform: 'uppercase', marginBottom: '0.5rem', letterSpacing: '0.05em' }}>
                 Project Scope & Details
               </h4>
-              <p style={{ 
-                color: '#333', 
-                lineHeight: '1.7', 
-                fontSize: '1rem', 
+              <p style={{
+                color: '#333',
+                lineHeight: '1.7',
+                fontSize: '1rem',
                 whiteSpace: 'pre-wrap'
               }}>
                 {selectedProject.description}
@@ -339,8 +339,8 @@ export default function Projects() {
               justifyContent: 'flex-end',
               backgroundColor: 'var(--secondary)'
             }}>
-              <button 
-                onClick={() => setSelectedProject(null)} 
+              <button
+                onClick={() => setSelectedProject(null)}
                 className="btn"
                 style={{ padding: '0.5rem 1.5rem' }}
               >

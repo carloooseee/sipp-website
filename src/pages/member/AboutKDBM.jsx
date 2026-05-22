@@ -1,6 +1,6 @@
 import React from 'react';
 import { Target, Eye, Users } from 'lucide-react';
-import { pic1 } from '../../assets/pictures';
+import { kdbmabout } from '../../assets/pictures';
 
 export default function AboutKDBM() {
   return (
@@ -63,15 +63,16 @@ export default function AboutKDBM() {
             </div>
           </div>
         </div>
-        <div style={{ position: 'relative', minHeight: '350px' }}>
+        <div style={{ position: 'relative', minHeight: '260px' }}>
           <img
-            src={pic1}
+            src={kdbmabout}
             alt="About KDBM"
             style={{
               width: '100%',
               height: '100%',
-              minHeight: '350px',
+              minHeight: '260px',
               objectFit: 'cover',
+              objectPosition: 'center',
               borderRadius: '8px',
               boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
             }}
