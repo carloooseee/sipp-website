@@ -186,7 +186,14 @@ function App() {
   }
 
   if (!user) {
-    return <Auth />;
+    return (
+      <Router>
+        <Routes>
+          <Route path="/" element={<Auth />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Router>
+    );
   }
 
   const isAdmin = isAdminRole(userData?.role);
