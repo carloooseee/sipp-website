@@ -12,18 +12,18 @@ import kdbmLogo from '../assets/kdbm_logo.png';
 
 export default function Auth() {
   const [isLogin, setIsLogin] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('maria.clara@example.com');
+  const [password, setPassword] = useState('password123');
 
   // Custom Registration Fields
-  const [surname, setSurname] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [middleName, setMiddleName] = useState('');
-  const [address, setAddress] = useState('');
-  const [phone, setPhone] = useState('');
-  const [birthday, setBirthday] = useState('');
-  const [bloodType, setBloodType] = useState('');
-  const [philhealthNo, setPhilhealthNo] = useState('');
+  const [surname, setSurname] = useState('Clara');
+  const [firstName, setFirstName] = useState('Maria');
+  const [middleName, setMiddleName] = useState('dela Cruz');
+  const [address, setAddress] = useState('123 Sampaguita St., Manila');
+  const [phone, setPhone] = useState('09171234567');
+  const [birthday, setBirthday] = useState('1960-05-15');
+  const [bloodType, setBloodType] = useState('O+');
+  const [philhealthNo, setPhilhealthNo] = useState('12-345678901-2');
   const [familyInformation, setFamilyInformation] = useState([]);
   const [signupStep, setSignupStep] = useState(1);
 
