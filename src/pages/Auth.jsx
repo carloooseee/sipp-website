@@ -12,8 +12,8 @@ import kdbmLogo from '../assets/kdbm_logo.png';
 
 export default function Auth() {
   const [isLogin, setIsLogin] = useState(false);
-  const [email, setEmail] = useState('maria.clara@example.com');
-  const [password, setPassword] = useState('password123');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   // Custom Registration Fields
   const [surname, setSurname] = useState('Clara');
